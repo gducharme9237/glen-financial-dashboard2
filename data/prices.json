@@ -1,0 +1,12 @@
+{
+  "updated_at": null,
+  "source": "Alpha Vantage GLOBAL_QUOTE",
+  "prices": {
+    "VOO": null,
+    "FSKAX": null,
+    "SCHD": null,
+    "VXUS": null,
+    "MU": null
+  },
+  "errors": {}
+}
