@@ -1,184 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Glen's Financial Dashboard v2</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
-<style>
-:root{--bg:#f4f7fb;--card:#fff;--ink:#172033;--muted:#687386;--blue:#2457a7;--line:#dbe2ea;--green:#16804b;--red:#c63c3c;--soft:#eef4ff}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-.wrap{max-width:1500px;margin:0 auto;padding:22px}header{display:flex;justify-content:space-between;gap:20px;margin-bottom:16px}
-h1{margin:0;font-size:30px}.sub,.note{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 3px 14px rgba(30,55,90,.06)}
-.kpi{grid-column:span 3}.half{grid-column:span 6}.wide{grid-column:span 12}.third{grid-column:span 4}
-.label{font-size:13px;color:var(--muted)}.value{font-size:26px;font-weight:750;margin-top:7px}h3{margin:0 0 12px;font-size:17px}
-table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:right}
-th:first-child,td:first-child{text-align:left}th{font-size:12px;text-transform:uppercase;color:var(--muted)}
-.good{color:var(--green);font-weight:700}.bad{color:var(--red);font-weight:700}
-input{width:100%;padding:9px;border:1px solid var(--line);border-radius:8px;font-size:14px}
-label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}.inputs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-button{border:0;border-radius:9px;padding:10px 14px;background:var(--blue);color:white;font-weight:700;cursor:pointer}
-.progress{height:14px;background:#e9edf3;border-radius:8px;overflow:hidden}.bar{height:100%;background:var(--blue)}
-.flex{display:flex;justify-content:space-between;gap:12px}.insight{padding:12px;background:var(--soft);border-radius:10px;margin:8px 0}
-.tv{height:310px}.tv iframe{width:100%;height:100%;border:0}
-canvas{max-height:290px}
-@media(max-width:900px){.kpi,.half,.third{grid-column:span 12}.inputs{grid-template-columns:1fr 1fr}}
-@media(max-width:560px){.wrap{padding:12px}.inputs{grid-template-columns:1fr}header{display:block}}
-</style>
-</head>
-<body>
-<div class="wrap">
-<header>
-<div><h1>Glen's Financial Dashboard</h1><div class="sub">Reliable local version with editable prices and embedded market charts</div></div>
-<div class="note">Version 2</div>
-</header>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Glen's Financial Dashboard</title><link rel="stylesheet" href="css/styles.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script></head><body>
+<header><div><h1>Glen's Financial Dashboard</h1><p>Portfolio performance, HYS goals, RSUs, and monthly guidance</p></div><button id="themeToggle">Toggle theme</button></header>
+<nav><a href="#overview">Overview</a><a href="#portfolio">Portfolio</a><a href="#hys">HYS</a><a href="#rsu">RSUs</a><a href="#playbook">Playbook</a></nav>
+<main>
+<section id="overview"><div class="heading"><div><h2>Overview</h2><p>Automatic prices from your GitHub data file.</p></div><span id="priceStatus">Loading…</span></div>
+<div class="kpis">
+<div class="card"><small>Tracked assets</small><strong id="trackedAssets">—</strong></div>
+<div class="card"><small>E*Trade value</small><strong id="brokerageValue">—</strong></div>
+<div class="card"><small>HYS balance</small><strong id="hysValue">—</strong></div>
+<div class="card"><small>MU vested value</small><strong id="muValue">—</strong></div>
+<div class="card"><small>Total invested</small><strong id="totalInvested">—</strong></div>
+<div class="card"><small>Brokerage gain/loss</small><strong id="totalGain">—</strong></div>
+<div class="card"><small>Brokerage return</small><strong id="totalReturn">—</strong></div>
+<div class="card"><small>Est. annual dividends</small><strong id="annualDividends">—</strong></div>
+</div></section>
 
-<div class="grid">
-<div class="card kpi"><div class="label">Tracked assets</div><div class="value" id="trackedAssets">—</div></div>
-<div class="card kpi"><div class="label">E*Trade value</div><div class="value" id="brokerageValue">—</div></div>
-<div class="card kpi"><div class="label">HYS balance</div><div class="value" id="hysValue">—</div></div>
-<div class="card kpi"><div class="label">MU vested value</div><div class="value" id="muValue">—</div></div>
+<section id="portfolio"><div class="heading"><div><h2>E*Trade Portfolio</h2><p>Cost basis, returns, allocation, and next purchase.</p></div></div>
+<div class="cols"><div class="card"><h3>Current allocation</h3><canvas id="allocationChart"></canvas></div>
+<div class="card"><h3>Target vs current</h3><canvas id="targetChart"></canvas></div></div>
+<div class="card"><h3>Holdings performance</h3><div class="tablewrap"><table><thead><tr><th>Ticker</th><th>Shares</th><th>Avg cost</th><th>Current</th><th>Value</th><th>Gain/loss</th><th>Return</th><th>Allocation</th><th>Target</th></tr></thead><tbody id="portfolioBody"></tbody></table></div></div>
+<div class="card"><h3>Recommendation engine</h3><div id="primaryRecommendation" class="insight"></div><div id="splitRecommendation" class="insight"></div></div>
+</section>
 
-<div class="card half">
-<h3>HYS goal</h3>
-<div class="flex"><strong id="hysCurrent">—</strong><span class="note">Goal: $100,000</span></div>
-<div class="progress" style="margin:12px 0"><div class="bar" id="hysBar"></div></div>
-<div class="flex"><span class="note">Remaining</span><strong id="hysRemaining">—</strong></div>
-<div class="note" id="hysEta" style="margin-top:10px"></div>
-</div>
+<section id="hys"><div class="heading"><div><h2>High-Yield Savings</h2><p>Progress toward your $100,000 target.</p></div></div>
+<div class="cols"><div class="card"><div class="row"><strong id="hysCurrent">—</strong><span id="hysTargetLabel">—</span></div><div class="progress"><div id="hysBar"></div></div>
+<dl><div><dt>Remaining</dt><dd id="hysRemaining">—</dd></div><div><dt>Monthly contribution</dt><dd id="hysContribution">—</dd></div><div><dt>APY</dt><dd id="hysApy">—</dd></div><div><dt>Estimated goal date</dt><dd id="hysGoalDate">—</dd></div><div><dt>Est. annual interest</dt><dd id="hysInterest">—</dd></div></dl></div>
+<div class="card"><h3>18-month forecast</h3><canvas id="hysChart"></canvas></div></div></section>
 
-<div class="card half">
-<h3>Monthly playbook</h3>
-<div class="insight" id="buyInsight">Calculating...</div>
-<div class="insight" id="splitInsight">Calculating recommended split...</div>
-<div class="insight">E*Trade goal: <strong>$2,000/month</strong></div>
-<div class="insight">HYS target: <strong>$1,500/month</strong> within a $1,000–$2,000 range</div>
-</div>
+<section id="rsu"><div class="heading"><div><h2>Micron RSUs</h2><p>Current value and upcoming vesting.</p></div></div>
+<div class="cols"><div class="card"><dl><div><dt>Vested shares</dt><dd id="muShares">—</dd></div><div><dt>MU price</dt><dd id="muPrice">—</dd></div><div><dt>Vested value</dt><dd id="muCurrentValue">—</dd></div><div><dt>Concentration vs brokerage</dt><dd id="muConcentration">—</dd></div></dl></div>
+<div class="card"><h3>Upcoming vesting</h3><ul id="vestingTimeline"></ul></div></div></section>
 
-<div class="card wide">
-<h3>E*Trade allocation</h3>
-<table>
-<thead><tr><th>Ticker</th><th>Shares</th><th>Current price</th><th>Market value</th><th>Target</th><th>Current</th><th>Difference</th></tr></thead>
-<tbody id="holdingsBody"></tbody>
-</table>
-</div>
-
-<div class="card half"><h3>Current allocation</h3><canvas id="allocationChart"></canvas></div>
-<div class="card half"><h3>Target vs current allocation</h3><canvas id="targetChart"></canvas></div>
-
-<div class="card half"><h3>VOO — 1 month</h3><div class="tv"><iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_VOO&symbol=AMEX%3AVOO&interval=D&hidesidetoolbar=1&symboledit=0&saveimage=0&toolbarbg=f1f3f6&studies=[]&theme=light&style=1&timezone=America%2FBoise&withdateranges=1&range=1M&hideideas=1"></iframe></div></div>
-<div class="card half"><h3>VXUS — 1 month</h3><div class="tv"><iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_VXUS&symbol=NASDAQ%3AVXUS&interval=D&hidesidetoolbar=1&symboledit=0&saveimage=0&toolbarbg=f1f3f6&studies=[]&theme=light&style=1&timezone=America%2FBoise&withdateranges=1&range=1M&hideideas=1"></iframe></div></div>
-<div class="card half"><h3>SCHD — 1 month</h3><div class="tv"><iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_SCHD&symbol=AMEX%3ASCHD&interval=D&hidesidetoolbar=1&symboledit=0&saveimage=0&toolbarbg=f1f3f6&studies=[]&theme=light&style=1&timezone=America%2FBoise&withdateranges=1&range=1M&hideideas=1"></iframe></div></div>
-<div class="card half"><h3>FSKAX — 1 month</h3><div class="tv"><iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_FSKAX&symbol=MUTF%3AFSKAX&interval=D&hidesidetoolbar=1&symboledit=0&saveimage=0&toolbarbg=f1f3f6&studies=[]&theme=light&style=1&timezone=America%2FBoise&withdateranges=1&range=1M&hideideas=1"></iframe></div></div>
-<div class="card half"><h3>MU — 1 month</h3><div class="tv"><iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_MU&symbol=NASDAQ%3AMU&interval=D&hidesidetoolbar=1&symboledit=0&saveimage=0&toolbarbg=f1f3f6&studies=[]&theme=light&style=1&timezone=America%2FBoise&withdateranges=1&range=1M&hideideas=1"></iframe></div></div>
-
-<div class="card half">
-<h3>Micron RSUs</h3>
-<table><tbody>
-<tr><td><strong>Vested shares</strong></td><td>162</td></tr>
-<tr><td><strong>July 15, 2026 vest</strong></td><td>9 gross shares</td></tr>
-<tr><td><strong>August 1, 2026 vest</strong></td><td>120 gross shares</td></tr>
-<tr><td><strong>Tax method</strong></td><td>Withhold to cover</td></tr>
-</tbody></table>
-</div>
-
-<div class="card wide">
-<h3>Update prices and assumptions</h3>
-<div class="inputs">
-<div><label>VOO current price</label><input id="priceVOO" type="number" step="0.01" value="694.00"></div>
-<div><label>FSKAX current price / NAV</label><input id="priceFSKAX" type="number" step="0.01" value="206.05"></div>
-<div><label>SCHD current price</label><input id="priceSCHD" type="number" step="0.01" value="31.82"></div>
-<div><label>VXUS current price</label><input id="priceVXUS" type="number" step="0.01" value="86.07"></div>
-<div><label>MU current price</label><input id="priceMU" type="number" step="0.01" value="0"></div>
-<div><label>HYS balance</label><input id="hysInput" type="number" step="0.01" value="80131.67"></div>
-<div><label>HYS monthly contribution</label><input id="hysMonthlyInput" type="number" step="100" value="1500"></div>
-<div><label>HYS APY %</label><input id="hysApyInput" type="number" step="0.01" value="3"></div>
-<div><label>Price update date</label><input id="priceDateInput" type="date"></div>
-</div>
-<div style="margin-top:12px"><button onclick="saveAll()">Save and recalculate</button></div>
-<div class="note" id="priceUpdatedNote" style="margin-top:10px">Current prices are editable. Update them from E*Trade, then save and recalculate.</div>
-</div>
-</div>
-</div>
-
-<script>
-const money=n=>n.toLocaleString("en-US",{style:"currency",currency:"USD"});
-const state={
-shares:{VOO:18,FSKAX:72.868,SCHD:63,VXUS:24},
-prices:{VOO:694,FSKAX:206.05,SCHD:31.82,VXUS:86.07,MU:0},
-targets:{FSKAX:.40,VOO:.20,SCHD:.20,VXUS:.20},
-hys:80131.67,hysTarget:100000,hysMonthly:1500,hysApy:.03,muShares:162,priceDate:""
-};
-let allocationChart,targetChart;
-function load(){
-const s=localStorage.getItem("glenDashboardV2");if(s)Object.assign(state,JSON.parse(s));
-for(const t of ["VOO","FSKAX","SCHD","VXUS","MU"])document.getElementById("price"+t).value=state.prices[t];
-hysInput.value=state.hys;hysMonthlyInput.value=state.hysMonthly;hysApyInput.value=state.hysApy*100;priceDateInput.value=state.priceDate||"";
-}
-function saveAll(){
-for(const t of ["VOO","FSKAX","SCHD","VXUS","MU"])state.prices[t]=+document.getElementById("price"+t).value;
-state.hys=+hysInput.value;state.hysMonthly=+hysMonthlyInput.value;state.hysApy=+hysApyInput.value/100;state.priceDate=priceDateInput.value;
-localStorage.setItem("glenDashboardV2",JSON.stringify(state));render();
-}
-function monthsToGoal(){
-let b=state.hys,m=0,r=Math.pow(1+state.hysApy,1/12)-1;
-while(b<state.hysTarget&&m<600){b=b*(1+r)+state.hysMonthly;m++}return m;
-}
-function render(){
-const values={};let total=0;
-for(const t of ["FSKAX","VOO","SCHD","VXUS"]){values[t]=state.shares[t]*state.prices[t];total+=values[t]}
-const mu=state.muShares*state.prices.MU;
-brokerageValue.textContent=money(total);hysValue.textContent=money(state.hys);muValue.textContent=money(mu);trackedAssets.textContent=money(total+state.hys+mu);
-hysCurrent.textContent=money(state.hys);hysRemaining.textContent=money(Math.max(state.hysTarget-state.hys,0));hysBar.style.width=Math.min(state.hys/state.hysTarget*100,100)+"%";
-hysEta.textContent=`Estimated time to $100,000: about ${monthsToGoal()} months at the current assumptions.`;
-priceUpdatedNote.textContent=state.priceDate?`Prices last updated: ${new Date(state.priceDate+"T12:00:00").toLocaleDateString()}.`:"Prices have not been date-stamped yet.";
-
-let best=null,bestShortfall=-Infinity;holdingsBody.innerHTML="";
-const order=["FSKAX","VOO","SCHD","VXUS"];
-const shortfalls={};
-for(const t of order){
-  const alloc=values[t]/total;
-  const pctGap=state.targets[t]-alloc;
-  const targetValueAfterContribution=(total+2000)*state.targets[t];
-  const dollarShortfall=Math.max(targetValueAfterContribution-values[t],0);
-  shortfalls[t]=dollarShortfall;
-  if(dollarShortfall>bestShortfall){best=t;bestShortfall=dollarShortfall}
-  holdingsBody.insertAdjacentHTML("beforeend",`<tr>
-    <td><strong>${t}</strong></td>
-    <td>${state.shares[t]}</td>
-    <td>${money(state.prices[t])}</td>
-    <td>${money(values[t])}</td>
-    <td>${(state.targets[t]*100).toFixed(0)}%</td>
-    <td>${(alloc*100).toFixed(1)}%</td>
-    <td class="${pctGap>=0?'good':'bad'}">${(pctGap*100).toFixed(1)} pts</td>
-  </tr>`);
-}
-buyInsight.innerHTML=`Primary recommendation for the next <strong>$2,000</strong>: <strong>${best}</strong>, based on the largest dollar shortfall versus your target mix after the contribution.`;
-
-const totalShortfall=order.reduce((s,t)=>s+shortfalls[t],0);
-let remaining=2000;
-const split=[];
-if(totalShortfall>0){
-  order.forEach((t,i)=>{
-    let amt=i===order.length-1 ? remaining : Math.round((shortfalls[t]/totalShortfall)*2000/10)*10;
-    amt=Math.max(0,Math.min(amt,remaining));
-    remaining-=amt;
-    if(amt>0) split.push(`${t}: ${money(amt)}`);
-  });
-}
-if(remaining>0) split.push(`${best}: ${money(remaining)}`);
-splitInsight.innerHTML=`Suggested balanced split: <strong>${split.join(" · ")}</strong>. You can still put the full $2,000 into ${best} if you prefer one trade.`;
-
-if(allocationChart)allocationChart.destroy();
-allocationChart=new Chart(document.getElementById("allocationChart"),{type:"pie",data:{labels:["FSKAX","VOO","SCHD","VXUS"],datasets:[{data:["FSKAX","VOO","SCHD","VXUS"].map(t=>values[t])}]},options:{plugins:{legend:{position:"bottom"}}}});
-if(targetChart)targetChart.destroy();
-targetChart=new Chart(document.getElementById("targetChart"),{type:"bar",data:{labels:["FSKAX","VOO","SCHD","VXUS"],datasets:[
-{label:"Current %",data:["FSKAX","VOO","SCHD","VXUS"].map(t=>values[t]/total*100)},
-{label:"Target %",data:["FSKAX","VOO","SCHD","VXUS"].map(t=>state.targets[t]*100)}
-]},options:{plugins:{legend:{position:"bottom"}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v+"%"}}}}});
-}
-load();render();
-</script>
-</body>
-</html>
+<section id="playbook"><div class="heading"><div><h2>Monthly Investment Playbook</h2><p>Your recurring checklist.</p></div></div>
+<div class="playbook"><div class="card"><b>1</b><div><strong>Fund E*Trade</strong><p>Deposit $2,000.</p></div></div>
+<div class="card"><b>2</b><div><strong id="playbookBuy">Buy recommendation</strong><p id="playbookReason">Calculating…</p></div></div>
+<div class="card"><b>3</b><div><strong>Fund HYS</strong><p>Target $1,500.</p></div></div>
+<div class="card"><b>4</b><div><strong>Update RSUs</strong><p>Replace gross vesting with net shares received.</p></div></div></div></section>
+</main><footer>Personal planning dashboard. Verify trade decisions in E*Trade.</footer><script src="js/dashboard.js"></script></body></html>
