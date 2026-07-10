@@ -51,6 +51,7 @@ canvas{max-height:290px}
 <div class="card half">
 <h3>Monthly playbook</h3>
 <div class="insight" id="buyInsight">Calculating...</div>
+<div class="insight" id="splitInsight">Calculating recommended split...</div>
 <div class="insight">E*Trade goal: <strong>$2,000/month</strong></div>
 <div class="insight">HYS target: <strong>$1,500/month</strong> within a $1,000–$2,000 range</div>
 </div>
@@ -93,9 +94,10 @@ canvas{max-height:290px}
 <div><label>HYS balance</label><input id="hysInput" type="number" step="0.01" value="80131.67"></div>
 <div><label>HYS monthly contribution</label><input id="hysMonthlyInput" type="number" step="100" value="1500"></div>
 <div><label>HYS APY %</label><input id="hysApyInput" type="number" step="0.01" value="3"></div>
+<div><label>Price update date</label><input id="priceDateInput" type="date"></div>
 </div>
 <div style="margin-top:12px"><button onclick="saveAll()">Save and recalculate</button></div>
-<div class="note" style="margin-top:10px">Current prices are editable because local browser security prevents this file from reliably pulling quote data. The charts above use TradingView embeds and should load independently.</div>
+<div class="note" id="priceUpdatedNote" style="margin-top:10px">Current prices are editable. Update them from E*Trade, then save and recalculate.</div>
 </div>
 </div>
 </div>
@@ -106,17 +108,17 @@ const state={
 shares:{VOO:18,FSKAX:72.868,SCHD:63,VXUS:24},
 prices:{VOO:694,FSKAX:206.05,SCHD:31.82,VXUS:86.07,MU:0},
 targets:{FSKAX:.40,VOO:.20,SCHD:.20,VXUS:.20},
-hys:80131.67,hysTarget:100000,hysMonthly:1500,hysApy:.03,muShares:162
+hys:80131.67,hysTarget:100000,hysMonthly:1500,hysApy:.03,muShares:162,priceDate:""
 };
 let allocationChart,targetChart;
 function load(){
 const s=localStorage.getItem("glenDashboardV2");if(s)Object.assign(state,JSON.parse(s));
 for(const t of ["VOO","FSKAX","SCHD","VXUS","MU"])document.getElementById("price"+t).value=state.prices[t];
-hysInput.value=state.hys;hysMonthlyInput.value=state.hysMonthly;hysApyInput.value=state.hysApy*100;
+hysInput.value=state.hys;hysMonthlyInput.value=state.hysMonthly;hysApyInput.value=state.hysApy*100;priceDateInput.value=state.priceDate||"";
 }
 function saveAll(){
 for(const t of ["VOO","FSKAX","SCHD","VXUS","MU"])state.prices[t]=+document.getElementById("price"+t).value;
-state.hys=+hysInput.value;state.hysMonthly=+hysMonthlyInput.value;state.hysApy=+hysApyInput.value/100;
+state.hys=+hysInput.value;state.hysMonthly=+hysMonthlyInput.value;state.hysApy=+hysApyInput.value/100;state.priceDate=priceDateInput.value;
 localStorage.setItem("glenDashboardV2",JSON.stringify(state));render();
 }
 function monthsToGoal(){
@@ -130,13 +132,43 @@ const mu=state.muShares*state.prices.MU;
 brokerageValue.textContent=money(total);hysValue.textContent=money(state.hys);muValue.textContent=money(mu);trackedAssets.textContent=money(total+state.hys+mu);
 hysCurrent.textContent=money(state.hys);hysRemaining.textContent=money(Math.max(state.hysTarget-state.hys,0));hysBar.style.width=Math.min(state.hys/state.hysTarget*100,100)+"%";
 hysEta.textContent=`Estimated time to $100,000: about ${monthsToGoal()} months at the current assumptions.`;
+priceUpdatedNote.textContent=state.priceDate?`Prices last updated: ${new Date(state.priceDate+"T12:00:00").toLocaleDateString()}.`:"Prices have not been date-stamped yet.";
 
-let best=null,bestGap=-999;holdingsBody.innerHTML="";
-for(const t of ["FSKAX","VOO","SCHD","VXUS"]){
-const alloc=values[t]/total,gap=state.targets[t]-alloc;if(gap>bestGap){best=t;bestGap=gap}
-holdingsBody.insertAdjacentHTML("beforeend",`<tr><td><strong>${t}</strong></td><td>${state.shares[t]}</td><td>${money(state.prices[t])}</td><td>${money(values[t])}</td><td>${(state.targets[t]*100).toFixed(0)}%</td><td>${(alloc*100).toFixed(1)}%</td><td class="${gap>=0?'good':'bad'}">${(gap*100).toFixed(1)} pts</td></tr>`);
+let best=null,bestShortfall=-Infinity;holdingsBody.innerHTML="";
+const order=["FSKAX","VOO","SCHD","VXUS"];
+const shortfalls={};
+for(const t of order){
+  const alloc=values[t]/total;
+  const pctGap=state.targets[t]-alloc;
+  const targetValueAfterContribution=(total+2000)*state.targets[t];
+  const dollarShortfall=Math.max(targetValueAfterContribution-values[t],0);
+  shortfalls[t]=dollarShortfall;
+  if(dollarShortfall>bestShortfall){best=t;bestShortfall=dollarShortfall}
+  holdingsBody.insertAdjacentHTML("beforeend",`<tr>
+    <td><strong>${t}</strong></td>
+    <td>${state.shares[t]}</td>
+    <td>${money(state.prices[t])}</td>
+    <td>${money(values[t])}</td>
+    <td>${(state.targets[t]*100).toFixed(0)}%</td>
+    <td>${(alloc*100).toFixed(1)}%</td>
+    <td class="${pctGap>=0?'good':'bad'}">${(pctGap*100).toFixed(1)} pts</td>
+  </tr>`);
 }
-buyInsight.innerHTML=`Recommended next purchase: <strong>${best}</strong>, currently the most underweight versus your target mix.`;
+buyInsight.innerHTML=`Primary recommendation for the next <strong>$2,000</strong>: <strong>${best}</strong>, based on the largest dollar shortfall versus your target mix after the contribution.`;
+
+const totalShortfall=order.reduce((s,t)=>s+shortfalls[t],0);
+let remaining=2000;
+const split=[];
+if(totalShortfall>0){
+  order.forEach((t,i)=>{
+    let amt=i===order.length-1 ? remaining : Math.round((shortfalls[t]/totalShortfall)*2000/10)*10;
+    amt=Math.max(0,Math.min(amt,remaining));
+    remaining-=amt;
+    if(amt>0) split.push(`${t}: ${money(amt)}`);
+  });
+}
+if(remaining>0) split.push(`${best}: ${money(remaining)}`);
+splitInsight.innerHTML=`Suggested balanced split: <strong>${split.join(" · ")}</strong>. You can still put the full $2,000 into ${best} if you prefer one trade.`;
 
 if(allocationChart)allocationChart.destroy();
 allocationChart=new Chart(document.getElementById("allocationChart"),{type:"pie",data:{labels:["FSKAX","VOO","SCHD","VXUS"],datasets:[{data:["FSKAX","VOO","SCHD","VXUS"].map(t=>values[t])}]},options:{plugins:{legend:{position:"bottom"}}}});
