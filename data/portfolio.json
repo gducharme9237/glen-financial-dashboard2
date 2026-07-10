@@ -1,0 +1,51 @@
+{
+  "brokerage_monthly_contribution": 2000,
+  "holdings": {
+    "FSKAX": {
+      "shares": 72.868,
+      "cost_basis": 15014.18,
+      "target": 0.4,
+      "dividend_yield_estimate": 0.012
+    },
+    "VOO": {
+      "shares": 18,
+      "cost_basis": 12485.82,
+      "target": 0.2,
+      "dividend_yield_estimate": 0.011
+    },
+    "SCHD": {
+      "shares": 63,
+      "cost_basis": 2004.65,
+      "target": 0.2,
+      "dividend_yield_estimate": 0.038
+    },
+    "VXUS": {
+      "shares": 24,
+      "cost_basis": 2065.68,
+      "target": 0.2,
+      "dividend_yield_estimate": 0.031
+    }
+  },
+  "hys": {
+    "balance": 80131.67,
+    "target": 100000,
+    "apy": 0.03,
+    "monthly_contribution": 1500
+  },
+  "micron": {
+    "ticker": "MU",
+    "vested_shares": 162,
+    "vesting_events": [
+      {
+        "date": "2026-07-15",
+        "gross_shares": 9,
+        "status": "scheduled"
+      },
+      {
+        "date": "2026-08-01",
+        "gross_shares": 120,
+        "status": "scheduled"
+      }
+    ]
+  }
+}
