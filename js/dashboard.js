@@ -162,7 +162,7 @@ function renderCharts(values, holdings, hys) {
 }
 
 
-function projectRetirement(retirement) {
+function projectRetirement(retirement, annualReturn = retirement.annual_return) {
   const dob = new Date(`${retirement.date_of_birth}T12:00:00`);
   const endDate = new Date(
     dob.getFullYear() + retirement.projection_age,
@@ -170,7 +170,7 @@ function projectRetirement(retirement) {
     dob.getDate()
   );
   const contributionEnd = new Date(`${retirement.contribution_end_date}T23:59:59`);
-  const monthlyRate = Math.pow(1 + retirement.annual_return, 1 / 12) - 1;
+  const monthlyRate = Math.pow(1 + annualReturn, 1 / 12) - 1;
 
   const labels = [];
   const values = [];
@@ -199,19 +199,11 @@ function projectRetirement(retirement) {
   };
 }
 
-function renderRetirement(retirement) {
-  const projection = projectRetirement(retirement);
-  const contributionEnd = new Date(`${retirement.contribution_end_date}T12:00:00`);
+function updateRetirementScenario(retirement, annualReturn) {
+  const projection = projectRetirement(retirement, annualReturn);
   const growth = projection.finalValue - retirement.balance;
 
-  $("retirementValue").textContent = money(retirement.balance);
-  $("retirementCurrent").textContent = money(retirement.balance);
-  $("retirementContribution").textContent = money(retirement.monthly_contribution);
-  $("retirementContributionEnd").textContent = contributionEnd.toLocaleDateString(
-    "en-US",
-    { month: "long", year: "numeric" }
-  );
-  $("retirementReturn").textContent = pct(retirement.annual_return);
+  $("retirementReturn").textContent = `${(annualReturn * 100).toFixed(1)}%`;
   $("retirementProjected").textContent = money(projection.finalValue);
   $("retirementGrowth").textContent = signedMoney(growth);
   $("retirementGrowth").className = growth >= 0 ? "good" : "bad";
@@ -222,7 +214,7 @@ function renderRetirement(retirement) {
     data: {
       labels: projection.labels,
       datasets: [{
-        label: "Projected 401(k)",
+        label: `Projected 401(k) at ${(annualReturn * 100).toFixed(1)}%`,
         data: projection.values,
         borderWidth: 2,
         pointRadius: 0,
@@ -239,6 +231,32 @@ function renderRetirement(retirement) {
   });
 }
 
+function renderRetirement(retirement) {
+  const contributionEnd = new Date(`${retirement.contribution_end_date}T12:00:00`);
+  const savedReturnPercent = retirement.annual_return * 100;
+  const slider = $("retirementReturnSlider");
+  const resetButton = $("retirementReturnReset");
+
+  $("retirementValue").textContent = money(retirement.balance);
+  $("retirementCurrent").textContent = money(retirement.balance);
+  $("retirementContribution").textContent = money(retirement.monthly_contribution);
+  $("retirementContributionEnd").textContent = contributionEnd.toLocaleDateString(
+    "en-US",
+    { month: "long", year: "numeric" }
+  );
+
+  slider.value = String(savedReturnPercent);
+  updateRetirementScenario(retirement, retirement.annual_return);
+
+  slider.addEventListener("input", () => {
+    updateRetirementScenario(retirement, Number(slider.value) / 100);
+  });
+
+  resetButton.addEventListener("click", () => {
+    slider.value = String(savedReturnPercent);
+    updateRetirementScenario(retirement, retirement.annual_return);
+  });
+}
 
 function filterHistoryByRange(snapshots, rangeValue) {
   if (rangeValue === "all") return snapshots;

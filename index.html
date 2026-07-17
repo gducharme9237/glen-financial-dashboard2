@@ -93,11 +93,33 @@
   </div>
   <div class="cols">
     <div class="card">
+      <div class="retirement-slider">
+        <div class="retirement-slider-heading">
+          <label for="retirementReturnSlider">Return assumption</label>
+          <strong id="retirementReturn">—</strong>
+        </div>
+        <input
+          id="retirementReturnSlider"
+          type="range"
+          min="4"
+          max="12"
+          step="0.5"
+          value="7"
+          aria-describedby="retirementSliderHelp"
+        >
+        <div class="retirement-slider-scale" aria-hidden="true">
+          <span>4%</span>
+          <span>12%</span>
+        </div>
+        <p id="retirementSliderHelp">
+          Drag the slider to test different return assumptions. This does not change your saved data.
+        </p>
+        <button id="retirementReturnReset" type="button">Reset to saved assumption</button>
+      </div>
       <dl>
         <div><dt>Current balance</dt><dd id="retirementCurrent">—</dd></div>
         <div><dt>Monthly contribution</dt><dd id="retirementContribution">—</dd></div>
         <div><dt>Contribution end date</dt><dd id="retirementContributionEnd">—</dd></div>
-        <div><dt>Return assumption</dt><dd id="retirementReturn">—</dd></div>
         <div><dt>Projected value at age 65</dt><dd id="retirementProjected">—</dd></div>
         <div><dt>Projected growth from today</dt><dd id="retirementGrowth">—</dd></div>
       </dl>
