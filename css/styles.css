@@ -39,3 +39,15 @@
 .retirement-scenario .scenario-difference.good{color:var(--good)}
 .retirement-scenario .scenario-difference.bad{color:var(--bad)}
 @media(max-width:600px){.retirement-comparison-grid{grid-template-columns:1fr}}
+
+
+.net-worth-kpis{margin-bottom:14px}
+.net-worth-kpis .card{min-height:118px}
+.net-worth-kpis .card span{display:block;margin-top:5px;color:var(--muted);font-size:13px}
+.net-worth-charts{align-items:stretch}
+.net-worth-charts .card{min-height:390px}
+#netWorthStatus{color:var(--muted);font-size:13px}
+#netWorthBody td:first-child{text-align:left}
+@media(max-width:1100px){.net-worth-kpis{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){.net-worth-kpis{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.net-worth-kpis{grid-template-columns:1fr}.net-worth-charts .card{min-height:auto}}

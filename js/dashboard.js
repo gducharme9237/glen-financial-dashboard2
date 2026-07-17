@@ -15,7 +15,10 @@ let targetChart = null;
 let hysChart = null;
 let retirementChart = null;
 let historyChart = null;
+let netWorthChart = null;
+let netWorthAllocationChart = null;
 let historySnapshots = [];
+let currentNetWorthAssets = [];
 
 async function loadJson(path) {
   const response = await fetch(`${path}?v=${Date.now()}`, { cache: "no-store" });
@@ -292,6 +295,132 @@ function renderRetirement(retirement) {
   });
 }
 
+function renderNetWorthCurrent(assets) {
+  currentNetWorthAssets = assets.filter((asset) => Number.isFinite(asset.value));
+  const total = currentNetWorthAssets.reduce((sum, asset) => sum + asset.value, 0);
+  const largest = [...currentNetWorthAssets].sort((a, b) => b.value - a.value)[0];
+
+  $("netWorthTotal").textContent = money(total);
+  $("netWorthLargestAsset").textContent = largest ? largest.label : "—";
+  $("netWorthLargestShare").textContent =
+    largest && total > 0 ? `${pct(largest.value / total)} of net worth` : "—";
+
+  $("netWorthBody").innerHTML = currentNetWorthAssets
+    .sort((a, b) => b.value - a.value)
+    .map((asset) => `<tr>
+      <td><strong>${asset.label}</strong></td>
+      <td>${money(asset.value)}</td>
+      <td>${pct(total > 0 ? asset.value / total : NaN)}</td>
+    </tr>`)
+    .join("");
+
+  if (netWorthAllocationChart) netWorthAllocationChart.destroy();
+  netWorthAllocationChart = new Chart($("netWorthAllocationChart"), {
+    type: "doughnut",
+    data: {
+      labels: currentNetWorthAssets.map((asset) => asset.label),
+      datasets: [{ data: currentNetWorthAssets.map((asset) => asset.value) }],
+    },
+    options: {
+      plugins: { legend: { position: "bottom" } },
+      cutout: "58%",
+    },
+  });
+}
+
+function renderNetWorthHistoryChart() {
+  const selectedRange = $("netWorthRange").value;
+  const rows = filterHistoryByRange(historySnapshots, selectedRange);
+
+  if (netWorthChart) netWorthChart.destroy();
+  netWorthChart = new Chart($("netWorthChart"), {
+    type: "line",
+    data: {
+      labels: rows.map((row) =>
+        new Date(`${row.date}T12:00:00`).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: rows.length > 365 ? "2-digit" : undefined,
+        })
+      ),
+      datasets: [{
+        label: "Net worth",
+        data: rows.map((row) => Number(row.tracked_assets)),
+        borderWidth: 2,
+        pointRadius: rows.length <= 31 ? 2 : 0,
+        tension: 0.18,
+        fill: false,
+      }],
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { maxTicksLimit: 10 } },
+        y: { ticks: { callback: (value) => money(Number(value)) } },
+      },
+    },
+  });
+}
+
+function renderNetWorthHistory() {
+  const setNetWorthMetric = (id, value, className = "") => {
+    const element = $(id);
+    element.textContent = value;
+    element.className = className;
+  };
+
+  if (!historySnapshots.length) {
+    $("netWorthStatus").textContent = "Current values loaded; historical metrics need snapshots.";
+    setNetWorthMetric("netWorthDailyChange", "—");
+    setNetWorthMetric("netWorth30DayChange", "—");
+    setNetWorthMetric("netWorthHigh", "—");
+    renderNetWorthHistoryChart();
+    return;
+  }
+
+  const latest = historySnapshots[historySnapshots.length - 1];
+  const latestValue = Number(latest.tracked_assets);
+  const high = Math.max(...historySnapshots.map((row) => Number(row.tracked_assets)));
+
+  let dailyChange = NaN;
+  if (historySnapshots.length >= 2) {
+    dailyChange =
+      latestValue -
+      Number(historySnapshots[historySnapshots.length - 2].tracked_assets);
+  }
+
+  const latestDate = new Date(`${latest.date}T12:00:00`);
+  const cutoff = new Date(latestDate);
+  cutoff.setDate(cutoff.getDate() - 30);
+  const comparisonRows = historySnapshots.filter(
+    (row) => new Date(`${row.date}T12:00:00`) <= cutoff
+  );
+  const comparison = comparisonRows.length
+    ? comparisonRows[comparisonRows.length - 1]
+    : null;
+  const thirtyDayChange = comparison
+    ? latestValue - Number(comparison.tracked_assets)
+    : NaN;
+
+  setNetWorthMetric(
+    "netWorthDailyChange",
+    signedMoney(dailyChange),
+    Number.isFinite(dailyChange) ? (dailyChange >= 0 ? "good" : "bad") : ""
+  );
+  setNetWorthMetric(
+    "netWorth30DayChange",
+    signedMoney(thirtyDayChange),
+    Number.isFinite(thirtyDayChange)
+      ? (thirtyDayChange >= 0 ? "good" : "bad")
+      : ""
+  );
+  setNetWorthMetric("netWorthHigh", money(high));
+  $("netWorthStatus").textContent =
+    `Latest snapshot ${latestDate.toLocaleDateString("en-US")}`;
+
+  renderNetWorthHistoryChart();
+}
+
 function filterHistoryByRange(snapshots, rangeValue) {
   if (rangeValue === "all") return snapshots;
   const days = Number(rangeValue);
@@ -360,6 +489,7 @@ function renderHistory(historyData) {
     $("historyBody").innerHTML =
       '<tr><td colspan="6">No history has been recorded yet.</td></tr>';
     renderHistoryChart();
+    renderNetWorthHistory();
     return;
   }
 
@@ -455,6 +585,7 @@ function renderHistory(historyData) {
     .join("");
 
   renderHistoryChart();
+  renderNetWorthHistory();
 }
 
 function renderDashboard(portfolio, priceData) {
@@ -479,6 +610,13 @@ function renderDashboard(portfolio, priceData) {
   const validMuPrice = Number.isFinite(muPrice) && muPrice > 0 ? muPrice : 0;
   const muValue = validMuPrice * portfolio.micron.vested_shares;
   const totalGain = brokerageValue - invested;
+
+  renderNetWorthCurrent([
+    { label: "401(k)", value: portfolio.retirement_401k.balance },
+    { label: "Brokerage", value: brokerageValue },
+    { label: "High-Yield Savings", value: portfolio.hys.balance },
+    { label: "Micron RSUs", value: muValue },
+  ]);
 
   $("trackedAssets").textContent = money(
     brokerageValue + portfolio.hys.balance + muValue + portfolio.retirement_401k.balance
@@ -625,6 +763,7 @@ async function init() {
 }
 
 $("historyRange").addEventListener("change", renderHistoryChart);
+$("netWorthRange").addEventListener("change", renderNetWorthHistoryChart);
 
 $("themeToggle").addEventListener("click", () => {
   const current = document.documentElement.getAttribute("data-theme");
