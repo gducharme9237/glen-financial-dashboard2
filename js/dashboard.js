@@ -199,6 +199,39 @@ function projectRetirement(retirement, annualReturn = retirement.annual_return) 
   };
 }
 
+function renderRetirementComparison(retirement) {
+  const savedReturn = retirement.annual_return;
+  const baselineValue = projectRetirement(retirement, savedReturn).finalValue;
+  const scenarioRates = [0.05, savedReturn, 0.09];
+  const uniqueRates = [...new Set(scenarioRates.map((rate) => rate.toFixed(4)))]
+    .map(Number)
+    .sort((a, b) => a - b);
+
+  $("retirementComparison").innerHTML = uniqueRates.map((rate) => {
+    const projectedValue = projectRetirement(retirement, rate).finalValue;
+    const difference = projectedValue - baselineValue;
+    const isSaved = Math.abs(rate - savedReturn) < 0.00001;
+    let differenceText = "Baseline";
+    let differenceClass = "";
+
+    if (!isSaved) {
+      differenceText = `${difference >= 0 ? "+" : "−"}${money(Math.abs(difference))} vs saved`;
+      differenceClass = difference >= 0 ? "good" : "bad";
+    }
+
+    return `
+      <div class="retirement-scenario${isSaved ? " saved" : ""}">
+        <div class="scenario-rate">
+          <strong>${(rate * 100).toFixed(1)}%</strong>
+          ${isSaved ? '<span class="scenario-badge">SAVED</span>' : ""}
+        </div>
+        <span class="scenario-value">${money(projectedValue)}</span>
+        <span class="scenario-difference ${differenceClass}">${differenceText}</span>
+      </div>
+    `;
+  }).join("");
+}
+
 function updateRetirementScenario(retirement, annualReturn) {
   const projection = projectRetirement(retirement, annualReturn);
   const growth = projection.finalValue - retirement.balance;
@@ -246,6 +279,7 @@ function renderRetirement(retirement) {
   );
 
   slider.value = String(savedReturnPercent);
+  renderRetirementComparison(retirement);
   updateRetirementScenario(retirement, retirement.annual_return);
 
   slider.addEventListener("input", () => {
