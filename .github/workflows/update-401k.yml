@@ -1,0 +1,41 @@
+name: Update 401(k) Balance
+
+on:
+  workflow_dispatch:
+    inputs:
+      balance:
+        description: "New combined 401(k) balance"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  update-401k:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Update 401(k) balance
+        run: python scripts/update_401k.py "${{ inputs.balance }}"
+
+      - name: Commit updated balance
+        run: |
+          if git diff --quiet data/portfolio.json; then
+            echo "The 401(k) balance is already set to this amount."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/portfolio.json
+          git commit -m "Update 401(k) balance to ${{ inputs.balance }}"
+          git push
