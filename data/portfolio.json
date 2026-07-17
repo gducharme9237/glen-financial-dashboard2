@@ -34,7 +34,7 @@
   },
   "micron": {
     "ticker": "MU",
-    "vested_shares": 162,
+    "vested_shares": 168,
     "vesting_events": [
       {
         "date": "2026-07-15",
@@ -47,5 +47,14 @@
         "status": "scheduled"
       }
     ]
+  },
+  "retirement_401k": {
+    "balance": 831053.0,
+    "monthly_contribution": 2142.0,
+    "annual_return": 0.07,
+    "contribution_end_date": "2030-12-31",
+    "date_of_birth": "1971-07-02",
+    "projection_age": 65,
+    "last_updated": "2026-07-16"
   }
 }

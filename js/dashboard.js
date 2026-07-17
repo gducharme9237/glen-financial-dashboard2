@@ -1,14 +1,418 @@
-const money=n=>Number.isFinite(n)?n.toLocaleString("en-US",{style:"currency",currency:"USD"}):"—";
-const pct=n=>Number.isFinite(n)?`${(n*100).toFixed(1)}%`:"—";
-const signed=n=>Number.isFinite(n)?`${n>=0?"+":""}${money(n)}`:"—";
-let allocationChart,targetChart,hysChart;
 
-async function getJson(path){const r=await fetch(`${path}?v=${Date.now()}`,{cache:"no-store"});if(!r.ok)throw new Error(path);return r.json()}
-function monthsToGoal(b,t,m,a){if(b>=t)return 0;let n=0,r=Math.pow(1+a,1/12)-1;while(b<t&&n<600){b=b*(1+r)+m;n++}return n}
-function addMonths(d,n){const x=new Date(d);x.setMonth(x.getMonth()+n);return x}
-function recommendations(values,holdings,contribution){const total=Object.values(values).reduce((a,b)=>a+b,0),post=total+contribution,s={};for(const [t,h] of Object.entries(holdings))s[t]=Math.max(post*h.target-values[t],0);const ranked=Object.entries(s).sort((a,b)=>b[1]-a[1]);const sum=ranked.reduce((a,[,v])=>a+v,0);const split=ranked.map(([t,v])=>[t,sum?Math.round(v/sum*contribution/10)*10:0]).filter(([,v])=>v>0);let used=split.reduce((a,[,v])=>a+v,0);if(split.length)split[0][1]+=contribution-used;return{primary:ranked[0][0],shortfall:ranked[0][1],split}}
-function renderCharts(values,holdings,hys){const tickers=Object.keys(holdings),total=Object.values(values).reduce((a,b)=>a+b,0);if(allocationChart)allocationChart.destroy();allocationChart=new Chart(allocationChartEl,{type:"pie",data:{labels:tickers,datasets:[{data:tickers.map(t=>values[t])}]},options:{plugins:{legend:{position:"bottom"}}}});if(targetChart)targetChart.destroy();targetChart=new Chart(targetChartEl,{type:"bar",data:{labels:tickers,datasets:[{label:"Current %",data:tickers.map(t=>values[t]/total*100)},{label:"Target %",data:tickers.map(t=>holdings[t].target*100)}]},options:{plugins:{legend:{position:"bottom"}},scales:{y:{beginAtZero:true,ticks:{callback:v=>`${v}%`}}}}});let labels=[],vals=[],v=hys.balance,r=Math.pow(1+hys.apy,1/12)-1;for(let i=0;i<=18;i++){labels.push(addMonths(new Date(),i).toLocaleDateString("en-US",{month:"short",year:"2-digit"}));vals.push(v);v=v*(1+r)+hys.monthly_contribution}if(hysChart)hysChart.destroy();hysChart=new Chart(hysChartEl,{type:"line",data:{labels,datasets:[{data:vals,borderWidth:2,pointRadius:0,tension:.25}]},options:{plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>money(v)}}}}})}
-function render(data,priceData){const holdings=data.holdings,prices=priceData.prices||{},values={};let brokerage=0,invested=0,dividends=0;for(const[t,h]of Object.entries(holdings)){const p=Number(prices[t]);values[t]=Number.isFinite(p)&&p>0?p*h.shares:0;brokerage+=values[t];invested+=h.cost_basis;dividends+=values[t]*h.dividend_yield_estimate}const mup=Number(prices[data.micron.ticker]),muv=Number.isFinite(mup)&&mup>0?mup*data.micron.vested_shares:0,gain=brokerage-invested;trackedAssets.textContent=money(brokerage+data.hys.balance+muv);brokerageValue.textContent=money(brokerage);hysValue.textContent=money(data.hys.balance);muValue.textContent=money(muv);totalInvested.textContent=money(invested);totalGain.textContent=signed(gain);totalGain.className=gain>=0?"good":"bad";totalReturn.textContent=pct(invested?gain/invested:NaN);totalReturn.className=gain>=0?"good":"bad";annualDividends.textContent=money(dividends);portfolioBody.innerHTML="";for(const[t,h]of Object.entries(holdings)){const p=Number(prices[t]),v=values[t],g=v-h.cost_basis,a=brokerage?v/brokerage:0;portfolioBody.insertAdjacentHTML("beforeend",`<tr><td><strong>${t}</strong></td><td>${h.shares.toFixed(t==="FSKAX"?3:0)}</td><td>${money(h.cost_basis/h.shares)}</td><td>${money(p)}</td><td>${money(v)}</td><td class="${g>=0?"good":"bad"}">${signed(g)}</td><td class="${g>=0?"good":"bad"}">${pct(g/h.cost_basis)}</td><td>${pct(a)}</td><td>${pct(h.target)}</td></tr>`)}const rec=recommendations(values,holdings,data.brokerage_monthly_contribution);primaryRecommendation.innerHTML=`<strong>Primary recommendation:</strong> Put the next ${money(data.brokerage_monthly_contribution)} into <strong>${rec.primary}</strong>. It is about ${money(rec.shortfall)} below its post-contribution target value.`;splitRecommendation.innerHTML=`<strong>Balanced split:</strong> ${rec.split.map(([t,v])=>`${t} ${money(v)}`).join(" · ")}`;playbookBuy.textContent=`Buy ${rec.primary}`;playbookReason.textContent=`${rec.primary} has the largest target-allocation shortfall.`;const m=monthsToGoal(data.hys.balance,data.hys.target,data.hys.monthly_contribution,data.hys.apy);hysCurrent.textContent=money(data.hys.balance);hysTargetLabel.textContent=`Goal: ${money(data.hys.target)}`;hysRemaining.textContent=money(Math.max(data.hys.target-data.hys.balance,0));hysContribution.textContent=money(data.hys.monthly_contribution);hysApy.textContent=pct(data.hys.apy);hysGoalDate.textContent=m===0?"Goal reached":addMonths(new Date(),m).toLocaleDateString("en-US",{month:"long",year:"numeric"});hysInterest.textContent=money(data.hys.balance*data.hys.apy);hysBar.style.width=`${Math.min(data.hys.balance/data.hys.target*100,100)}%`;muShares.textContent=data.micron.vested_shares;muPrice.textContent=money(mup);muCurrentValue.textContent=money(muv);muConcentration.textContent=pct(brokerage?muv/brokerage:NaN);vestingTimeline.innerHTML="";for(const e of data.micron.vesting_events){const d=new Date(`${e.date}T12:00:00`);vestingTimeline.insertAdjacentHTML("beforeend",`<li><strong>${d.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}</strong><br>${e.gross_shares} gross shares · ${e.status}</li>`)}priceStatus.textContent=priceData.updated_at?`Prices updated ${new Date(priceData.updated_at).toLocaleString()}`:"Prices not updated yet";renderCharts(values,holdings,data.hys)}
-async function init(){try{const[p,pr]=await Promise.all([getJson("data/portfolio.json"),getJson("data/prices.json")]);render(p,pr)}catch(e){priceStatus.textContent="Dashboard data could not load";console.error(e)}}
-const allocationChartEl=document.getElementById("allocationChart"),targetChartEl=document.getElementById("targetChart"),hysChartEl=document.getElementById("hysChart");
-themeToggle.onclick=()=>{const n=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",n);localStorage.setItem("dashboardTheme",n);init()};const saved=localStorage.getItem("dashboardTheme");if(saved)document.documentElement.setAttribute("data-theme",saved);init();
+"use strict";
+
+const $ = (id) => document.getElementById(id);
+const money = (n) =>
+  Number.isFinite(n)
+    ? n.toLocaleString("en-US", { style: "currency", currency: "USD" })
+    : "—";
+const pct = (n) => (Number.isFinite(n) ? `${(n * 100).toFixed(1)}%` : "—");
+const signedMoney = (n) =>
+  Number.isFinite(n) ? `${n >= 0 ? "+" : ""}${money(n)}` : "—";
+
+let allocationChart = null;
+let targetChart = null;
+let hysChart = null;
+let retirementChart = null;
+
+async function loadJson(path) {
+  const response = await fetch(`${path}?v=${Date.now()}`, { cache: "no-store" });
+  if (!response.ok) throw new Error(`Could not load ${path}: ${response.status}`);
+  return response.json();
+}
+
+function monthsToGoal(balance, target, monthly, apy) {
+  if (balance >= target) return 0;
+  let months = 0;
+  let value = balance;
+  const monthlyRate = Math.pow(1 + apy, 1 / 12) - 1;
+
+  while (value < target && months < 600) {
+    value = value * (1 + monthlyRate) + monthly;
+    months += 1;
+  }
+  return months;
+}
+
+function addMonths(date, months) {
+  const result = new Date(date);
+  result.setMonth(result.getMonth() + months);
+  return result;
+}
+
+function buildRecommendation(values, holdings, contribution) {
+  const total = Object.values(values).reduce((sum, value) => sum + value, 0);
+  const postContributionTotal = total + contribution;
+
+  const shortfalls = Object.entries(holdings).map(([ticker, holding]) => {
+    const targetValue = postContributionTotal * holding.target;
+    return [ticker, Math.max(targetValue - values[ticker], 0)];
+  });
+
+  shortfalls.sort((a, b) => b[1] - a[1]);
+  const primary = shortfalls[0][0];
+  const totalShortfall = shortfalls.reduce((sum, [, value]) => sum + value, 0);
+
+  const split = shortfalls
+    .map(([ticker, value]) => [
+      ticker,
+      totalShortfall > 0
+        ? Math.round((value / totalShortfall) * contribution / 10) * 10
+        : 0,
+    ])
+    .filter(([, value]) => value > 0);
+
+  const splitTotal = split.reduce((sum, [, value]) => sum + value, 0);
+  if (split.length && splitTotal !== contribution) {
+    split[0][1] += contribution - splitTotal;
+  }
+
+  return {
+    primary,
+    primaryShortfall: shortfalls[0][1],
+    split,
+  };
+}
+
+function renderCharts(values, holdings, hys) {
+  const tickers = Object.keys(holdings);
+  const portfolioTotal = Object.values(values).reduce((sum, value) => sum + value, 0);
+
+  if (allocationChart) allocationChart.destroy();
+  allocationChart = new Chart($("allocationChart"), {
+    type: "pie",
+    data: {
+      labels: tickers,
+      datasets: [{ data: tickers.map((ticker) => values[ticker]) }],
+    },
+    options: { plugins: { legend: { position: "bottom" } } },
+  });
+
+  if (targetChart) targetChart.destroy();
+  targetChart = new Chart($("targetChart"), {
+    type: "bar",
+    data: {
+      labels: tickers,
+      datasets: [
+        {
+          label: "Current %",
+          data: tickers.map((ticker) =>
+            portfolioTotal > 0 ? (values[ticker] / portfolioTotal) * 100 : 0
+          ),
+        },
+        {
+          label: "Target %",
+          data: tickers.map((ticker) => holdings[ticker].target * 100),
+        },
+      ],
+    },
+    options: {
+      plugins: { legend: { position: "bottom" } },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { callback: (value) => `${value}%` },
+        },
+      },
+    },
+  });
+
+  const labels = [];
+  const forecast = [];
+  let balance = hys.balance;
+  const monthlyRate = Math.pow(1 + hys.apy, 1 / 12) - 1;
+
+  for (let i = 0; i <= 18; i += 1) {
+    labels.push(
+      addMonths(new Date(), i).toLocaleDateString("en-US", {
+        month: "short",
+        year: "2-digit",
+      })
+    );
+    forecast.push(balance);
+    balance = balance * (1 + monthlyRate) + hys.monthly_contribution;
+  }
+
+  if (hysChart) hysChart.destroy();
+  hysChart = new Chart($("hysChart"), {
+    type: "line",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Projected HYS balance",
+          data: forecast,
+          borderWidth: 2,
+          pointRadius: 0,
+          tension: 0.25,
+        },
+      ],
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: {
+        y: {
+          ticks: { callback: (value) => money(Number(value)) },
+        },
+      },
+    },
+  });
+}
+
+
+function projectRetirement(retirement) {
+  const dob = new Date(`${retirement.date_of_birth}T12:00:00`);
+  const endDate = new Date(
+    dob.getFullYear() + retirement.projection_age,
+    dob.getMonth(),
+    dob.getDate()
+  );
+  const contributionEnd = new Date(`${retirement.contribution_end_date}T23:59:59`);
+  const monthlyRate = Math.pow(1 + retirement.annual_return, 1 / 12) - 1;
+
+  const labels = [];
+  const values = [];
+  let value = retirement.balance;
+  let current = new Date();
+  current = new Date(current.getFullYear(), current.getMonth(), 1);
+
+  while (current <= endDate) {
+    labels.push(
+      current.toLocaleDateString("en-US", { month: "short", year: "numeric" })
+    );
+    values.push(value);
+
+    value *= 1 + monthlyRate;
+    if (current <= contributionEnd) {
+      value += retirement.monthly_contribution;
+    }
+    current.setMonth(current.getMonth() + 1);
+  }
+
+  return {
+    labels,
+    values,
+    finalValue: values.length ? values[values.length - 1] : retirement.balance,
+    endDate,
+  };
+}
+
+function renderRetirement(retirement) {
+  const projection = projectRetirement(retirement);
+  const contributionEnd = new Date(`${retirement.contribution_end_date}T12:00:00`);
+  const growth = projection.finalValue - retirement.balance;
+
+  $("retirementValue").textContent = money(retirement.balance);
+  $("retirementCurrent").textContent = money(retirement.balance);
+  $("retirementContribution").textContent = money(retirement.monthly_contribution);
+  $("retirementContributionEnd").textContent = contributionEnd.toLocaleDateString(
+    "en-US",
+    { month: "long", year: "numeric" }
+  );
+  $("retirementReturn").textContent = pct(retirement.annual_return);
+  $("retirementProjected").textContent = money(projection.finalValue);
+  $("retirementGrowth").textContent = signedMoney(growth);
+  $("retirementGrowth").className = growth >= 0 ? "good" : "bad";
+
+  if (retirementChart) retirementChart.destroy();
+  retirementChart = new Chart($("retirementChart"), {
+    type: "line",
+    data: {
+      labels: projection.labels,
+      datasets: [{
+        label: "Projected 401(k)",
+        data: projection.values,
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.2
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { maxTicksLimit: 10 } },
+        y: { ticks: { callback: (value) => money(Number(value)) } }
+      }
+    }
+  });
+}
+
+function renderDashboard(portfolio, priceData) {
+  const holdings = portfolio.holdings;
+  const prices = priceData.prices || {};
+  const values = {};
+
+  let brokerageValue = 0;
+  let invested = 0;
+  let annualDividends = 0;
+
+  for (const [ticker, holding] of Object.entries(holdings)) {
+    const price = Number(prices[ticker]);
+    const validPrice = Number.isFinite(price) && price > 0 ? price : 0;
+    values[ticker] = validPrice * holding.shares;
+    brokerageValue += values[ticker];
+    invested += holding.cost_basis;
+    annualDividends += values[ticker] * holding.dividend_yield_estimate;
+  }
+
+  const muPrice = Number(prices[portfolio.micron.ticker]);
+  const validMuPrice = Number.isFinite(muPrice) && muPrice > 0 ? muPrice : 0;
+  const muValue = validMuPrice * portfolio.micron.vested_shares;
+  const totalGain = brokerageValue - invested;
+
+  $("trackedAssets").textContent = money(
+    brokerageValue + portfolio.hys.balance + muValue + portfolio.retirement_401k.balance
+  );
+  $("brokerageValue").textContent = money(brokerageValue);
+  $("hysValue").textContent = money(portfolio.hys.balance);
+  $("muValue").textContent = money(muValue);
+  $("totalInvested").textContent = money(invested);
+  $("totalGain").textContent = signedMoney(totalGain);
+  $("totalGain").className = totalGain >= 0 ? "good" : "bad";
+  $("totalReturn").textContent = pct(invested > 0 ? totalGain / invested : NaN);
+  $("totalReturn").className = totalGain >= 0 ? "good" : "bad";
+  $("annualDividends").textContent = money(annualDividends);
+
+  const tbody = $("portfolioBody");
+  tbody.innerHTML = "";
+
+  for (const [ticker, holding] of Object.entries(holdings)) {
+    const price = Number(prices[ticker]);
+    const marketValue = values[ticker];
+    const gain = marketValue - holding.cost_basis;
+    const allocation =
+      brokerageValue > 0 ? marketValue / brokerageValue : 0;
+
+    tbody.insertAdjacentHTML(
+      "beforeend",
+      `<tr>
+        <td><strong>${ticker}</strong></td>
+        <td>${holding.shares.toFixed(ticker === "FSKAX" ? 3 : 0)}</td>
+        <td>${money(holding.cost_basis / holding.shares)}</td>
+        <td>${money(price)}</td>
+        <td>${money(marketValue)}</td>
+        <td class="${gain >= 0 ? "good" : "bad"}">${signedMoney(gain)}</td>
+        <td class="${gain >= 0 ? "good" : "bad"}">${pct(
+          holding.cost_basis > 0 ? gain / holding.cost_basis : NaN
+        )}</td>
+        <td>${pct(allocation)}</td>
+        <td>${pct(holding.target)}</td>
+      </tr>`
+    );
+  }
+
+  const rec = buildRecommendation(
+    values,
+    holdings,
+    portfolio.brokerage_monthly_contribution
+  );
+
+  $("primaryRecommendation").innerHTML =
+    `<strong>Primary recommendation:</strong> Put the next ${money(
+      portfolio.brokerage_monthly_contribution
+    )} into <strong>${rec.primary}</strong>. ` +
+    `It is about ${money(
+      rec.primaryShortfall
+    )} below its target value after the next contribution.`;
+
+  $("splitRecommendation").innerHTML =
+    `<strong>Balanced split:</strong> ${rec.split
+      .map(([ticker, amount]) => `${ticker} ${money(amount)}`)
+      .join(" · ")}`;
+
+  $("playbookBuy").textContent = `Buy ${rec.primary}`;
+  $("playbookReason").textContent =
+    `${rec.primary} has the largest target-allocation shortfall.`;
+
+  const months = monthsToGoal(
+    portfolio.hys.balance,
+    portfolio.hys.target,
+    portfolio.hys.monthly_contribution,
+    portfolio.hys.apy
+  );
+
+  $("hysCurrent").textContent = money(portfolio.hys.balance);
+  $("hysTargetLabel").textContent = `Goal: ${money(portfolio.hys.target)}`;
+  $("hysRemaining").textContent = money(
+    Math.max(portfolio.hys.target - portfolio.hys.balance, 0)
+  );
+  $("hysContribution").textContent = money(
+    portfolio.hys.monthly_contribution
+  );
+  $("hysApy").textContent = pct(portfolio.hys.apy);
+  $("hysGoalDate").textContent =
+    months === 0
+      ? "Goal reached"
+      : addMonths(new Date(), months).toLocaleDateString("en-US", {
+          month: "long",
+          year: "numeric",
+        });
+  $("hysInterest").textContent = money(
+    portfolio.hys.balance * portfolio.hys.apy
+  );
+  $("hysBar").style.width = `${Math.min(
+    (portfolio.hys.balance / portfolio.hys.target) * 100,
+    100
+  )}%`;
+
+  $("muShares").textContent =
+    portfolio.micron.vested_shares.toLocaleString("en-US");
+  $("muPrice").textContent = money(validMuPrice);
+  $("muCurrentValue").textContent = money(muValue);
+  $("muConcentration").textContent = pct(
+    brokerageValue > 0 ? muValue / brokerageValue : NaN
+  );
+
+  const timeline = $("vestingTimeline");
+  timeline.innerHTML = "";
+  for (const event of portfolio.micron.vesting_events) {
+    const eventDate = new Date(`${event.date}T12:00:00`);
+    timeline.insertAdjacentHTML(
+      "beforeend",
+      `<li>
+        <strong>${eventDate.toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        })}</strong><br>
+        ${event.gross_shares} gross shares · ${event.status}
+      </li>`
+    );
+  }
+
+  $("priceStatus").textContent = priceData.updated_at
+    ? `Prices updated ${new Date(priceData.updated_at).toLocaleString()}`
+    : "Prices not updated yet";
+
+  renderRetirement(portfolio.retirement_401k);
+  renderCharts(values, holdings, portfolio.hys);
+}
+
+async function init() {
+  try {
+    $("priceStatus").textContent = "Loading dashboard data…";
+    const [portfolio, prices] = await Promise.all([
+      loadJson("data/portfolio.json"),
+      loadJson("data/prices.json"),
+    ]);
+    renderDashboard(portfolio, prices);
+  } catch (error) {
+    console.error(error);
+    $("priceStatus").textContent = "Dashboard data could not load";
+  }
+}
+
+$("themeToggle").addEventListener("click", () => {
+  const current = document.documentElement.getAttribute("data-theme");
+  const next = current === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  localStorage.setItem("dashboardTheme", next);
+  init();
+});
+
+const savedTheme = localStorage.getItem("dashboardTheme");
+if (savedTheme) {
+  document.documentElement.setAttribute("data-theme", savedTheme);
+}
+
+init();

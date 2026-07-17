@@ -2,7 +2,7 @@
 <title>Glen's Financial Dashboard</title><link rel="stylesheet" href="css/styles.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script></head><body>
 <header><div><h1>Glen's Financial Dashboard</h1><p>Portfolio performance, HYS goals, RSUs, and monthly guidance</p></div><button id="themeToggle">Toggle theme</button></header>
-<nav><a href="#overview">Overview</a><a href="#portfolio">Portfolio</a><a href="#hys">HYS</a><a href="#rsu">RSUs</a><a href="#playbook">Playbook</a></nav>
+<nav><a href="#overview">Overview</a><a href="#portfolio">Portfolio</a><a href="#hys">HYS</a><a href="#retirement">401(k)</a><a href="#rsu">RSUs</a><a href="#playbook">Playbook</a></nav>
 <main>
 <section id="overview"><div class="heading"><div><h2>Overview</h2><p>Automatic prices from your GitHub data file.</p></div><span id="priceStatus">Loading…</span></div>
 <div class="kpis">
@@ -10,6 +10,7 @@
 <div class="card"><small>E*Trade value</small><strong id="brokerageValue">—</strong></div>
 <div class="card"><small>HYS balance</small><strong id="hysValue">—</strong></div>
 <div class="card"><small>MU vested value</small><strong id="muValue">—</strong></div>
+<div class="card"><small>401(k) balance</small><strong id="retirementValue">—</strong></div>
 <div class="card"><small>Total invested</small><strong id="totalInvested">—</strong></div>
 <div class="card"><small>Brokerage gain/loss</small><strong id="totalGain">—</strong></div>
 <div class="card"><small>Brokerage return</small><strong id="totalReturn">—</strong></div>
@@ -27,6 +28,32 @@
 <div class="cols"><div class="card"><div class="row"><strong id="hysCurrent">—</strong><span id="hysTargetLabel">—</span></div><div class="progress"><div id="hysBar"></div></div>
 <dl><div><dt>Remaining</dt><dd id="hysRemaining">—</dd></div><div><dt>Monthly contribution</dt><dd id="hysContribution">—</dd></div><div><dt>APY</dt><dd id="hysApy">—</dd></div><div><dt>Estimated goal date</dt><dd id="hysGoalDate">—</dd></div><div><dt>Est. annual interest</dt><dd id="hysInterest">—</dd></div></dl></div>
 <div class="card"><h3>18-month forecast</h3><canvas id="hysChart"></canvas></div></div></section>
+
+
+<section id="retirement">
+  <div class="heading">
+    <div>
+      <h2>401(k) Retirement Projection</h2>
+      <p>Combined Traditional, Roth, and after-tax balance projected through age 65.</p>
+    </div>
+  </div>
+  <div class="cols">
+    <div class="card">
+      <dl>
+        <div><dt>Current balance</dt><dd id="retirementCurrent">—</dd></div>
+        <div><dt>Monthly contribution</dt><dd id="retirementContribution">—</dd></div>
+        <div><dt>Contribution end date</dt><dd id="retirementContributionEnd">—</dd></div>
+        <div><dt>Return assumption</dt><dd id="retirementReturn">—</dd></div>
+        <div><dt>Projected value at age 65</dt><dd id="retirementProjected">—</dd></div>
+        <div><dt>Projected growth from today</dt><dd id="retirementGrowth">—</dd></div>
+      </dl>
+    </div>
+    <div class="card">
+      <h3>Projected balance through age 65</h3>
+      <canvas id="retirementChart"></canvas>
+    </div>
+  </div>
+</section>
 
 <section id="rsu"><div class="heading"><div><h2>Micron RSUs</h2><p>Current value and upcoming vesting.</p></div></div>
 <div class="cols"><div class="card"><dl><div><dt>Vested shares</dt><dd id="muShares">—</dd></div><div><dt>MU price</dt><dd id="muPrice">—</dd></div><div><dt>Vested value</dt><dd id="muCurrentValue">—</dd></div><div><dt>Concentration vs brokerage</dt><dd id="muConcentration">—</dd></div></dl></div>
