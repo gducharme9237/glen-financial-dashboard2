@@ -14,6 +14,8 @@ let allocationChart = null;
 let targetChart = null;
 let hysChart = null;
 let retirementChart = null;
+let historyChart = null;
+let historySnapshots = [];
 
 async function loadJson(path) {
   const response = await fetch(`${path}?v=${Date.now()}`, { cache: "no-store" });
@@ -237,6 +239,98 @@ function renderRetirement(retirement) {
   });
 }
 
+
+function filterHistoryByRange(snapshots, rangeValue) {
+  if (rangeValue === "all") return snapshots;
+  const days = Number(rangeValue);
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
+  return snapshots.filter((row) => new Date(`${row.date}T12:00:00`) >= cutoff);
+}
+
+function renderHistoryChart() {
+  const selectedRange = $("historyRange").value;
+  const rows = filterHistoryByRange(historySnapshots, selectedRange);
+
+  if (historyChart) historyChart.destroy();
+  historyChart = new Chart($("historyChart"), {
+    type: "line",
+    data: {
+      labels: rows.map((row) =>
+        new Date(`${row.date}T12:00:00`).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: rows.length > 365 ? "2-digit" : undefined,
+        })
+      ),
+      datasets: [{
+        label: "Tracked assets",
+        data: rows.map((row) => row.tracked_assets),
+        borderWidth: 2,
+        pointRadius: rows.length <= 31 ? 2 : 0,
+        tension: 0.18,
+      }],
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { maxTicksLimit: 10 } },
+        y: { ticks: { callback: (value) => money(Number(value)) } },
+      },
+    },
+  });
+}
+
+function renderHistory(historyData) {
+  historySnapshots = Array.isArray(historyData.snapshots)
+    ? historyData.snapshots
+    : [];
+
+  if (!historySnapshots.length) {
+    $("historyStatus").textContent =
+      "No snapshots yet. Run the price workflow once after installing this update.";
+    $("historyStart").textContent = "—";
+    $("historyLatest").textContent = "—";
+    $("historyChange").textContent = "—";
+    $("historyCount").textContent = "0";
+    $("historyBody").innerHTML =
+      '<tr><td colspan="6">No history has been recorded yet.</td></tr>';
+    renderHistoryChart();
+    return;
+  }
+
+  const first = historySnapshots[0];
+  const latest = historySnapshots[historySnapshots.length - 1];
+  const change = latest.tracked_assets - first.tracked_assets;
+
+  $("historyStatus").textContent = historyData.updated_at
+    ? `History updated ${new Date(historyData.updated_at).toLocaleString()}`
+    : "History loaded";
+  $("historyStart").textContent = new Date(
+    `${first.date}T12:00:00`
+  ).toLocaleDateString("en-US");
+  $("historyLatest").textContent = money(latest.tracked_assets);
+  $("historyChange").textContent = signedMoney(change);
+  $("historyChange").className = change >= 0 ? "good" : "bad";
+  $("historyCount").textContent = historySnapshots.length.toLocaleString("en-US");
+
+  const recentRows = historySnapshots.slice(-10).reverse();
+  $("historyBody").innerHTML = recentRows
+    .map(
+      (row) => `<tr>
+        <td>${new Date(`${row.date}T12:00:00`).toLocaleDateString("en-US")}</td>
+        <td>${money(row.tracked_assets)}</td>
+        <td>${money(row.retirement_401k_value)}</td>
+        <td>${money(row.brokerage_value)}</td>
+        <td>${money(row.hys_value)}</td>
+        <td>${money(row.mu_value)}</td>
+      </tr>`
+    )
+    .join("");
+
+  renderHistoryChart();
+}
+
 function renderDashboard(portfolio, priceData) {
   const holdings = portfolio.holdings;
   const prices = priceData.prices || {};
@@ -391,16 +485,20 @@ function renderDashboard(portfolio, priceData) {
 async function init() {
   try {
     $("priceStatus").textContent = "Loading dashboard data…";
-    const [portfolio, prices] = await Promise.all([
+    const [portfolio, prices, history] = await Promise.all([
       loadJson("data/portfolio.json"),
       loadJson("data/prices.json"),
+      loadJson("data/history.json"),
     ]);
     renderDashboard(portfolio, prices);
+    renderHistory(history);
   } catch (error) {
     console.error(error);
     $("priceStatus").textContent = "Dashboard data could not load";
   }
 }
+
+$("historyRange").addEventListener("change", renderHistoryChart);
 
 $("themeToggle").addEventListener("click", () => {
   const current = document.documentElement.getAttribute("data-theme");
