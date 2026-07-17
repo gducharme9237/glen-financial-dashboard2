@@ -284,15 +284,27 @@ function renderHistoryChart() {
 function renderHistory(historyData) {
   historySnapshots = Array.isArray(historyData.snapshots)
     ? historyData.snapshots
+        .filter((row) => Number.isFinite(Number(row.tracked_assets)))
+        .sort((a, b) => a.date.localeCompare(b.date))
     : [];
+
+  const setMetric = (id, value, className = "") => {
+    const element = $(id);
+    element.textContent = value;
+    element.className = className;
+  };
 
   if (!historySnapshots.length) {
     $("historyStatus").textContent =
       "No snapshots yet. Run the price workflow once after installing this update.";
-    $("historyStart").textContent = "—";
-    $("historyLatest").textContent = "—";
-    $("historyChange").textContent = "—";
-    $("historyCount").textContent = "0";
+    setMetric("historyStart", "—");
+    setMetric("historyLatest", "—");
+    setMetric("historyDailyChange", "—");
+    setMetric("historyDailyReturn", "—");
+    setMetric("historyHigh", "—");
+    setMetric("historyLow", "—");
+    setMetric("historyAverageChange", "—");
+    setMetric("historyCount", "0");
     $("historyBody").innerHTML =
       '<tr><td colspan="6">No history has been recorded yet.</td></tr>';
     renderHistoryChart();
@@ -301,29 +313,91 @@ function renderHistory(historyData) {
 
   const first = historySnapshots[0];
   const latest = historySnapshots[historySnapshots.length - 1];
-  const change = latest.tracked_assets - first.tracked_assets;
+  const values = historySnapshots.map((row) => Number(row.tracked_assets));
+  const highestValue = Math.max(...values);
+  const lowestValue = Math.min(...values);
+
+  let latestDailyChange = NaN;
+  let latestDailyReturn = NaN;
+  let averageDailyChange = NaN;
+
+  if (historySnapshots.length >= 2) {
+    const previous = historySnapshots[historySnapshots.length - 2];
+    const previousValue = Number(previous.tracked_assets);
+
+    latestDailyChange = Number(latest.tracked_assets) - previousValue;
+    latestDailyReturn =
+      previousValue !== 0 ? latestDailyChange / previousValue : NaN;
+
+    const dailyChanges = historySnapshots.slice(1).map((row, index) =>
+      Number(row.tracked_assets) -
+      Number(historySnapshots[index].tracked_assets)
+    );
+    averageDailyChange =
+      dailyChanges.reduce((sum, change) => sum + change, 0) /
+      dailyChanges.length;
+  }
 
   $("historyStatus").textContent = historyData.updated_at
     ? `History updated ${new Date(historyData.updated_at).toLocaleString()}`
     : "History loaded";
-  $("historyStart").textContent = new Date(
-    `${first.date}T12:00:00`
-  ).toLocaleDateString("en-US");
-  $("historyLatest").textContent = money(latest.tracked_assets);
-  $("historyChange").textContent = signedMoney(change);
-  $("historyChange").className = change >= 0 ? "good" : "bad";
-  $("historyCount").textContent = historySnapshots.length.toLocaleString("en-US");
+
+  setMetric(
+    "historyStart",
+    new Date(`${first.date}T12:00:00`).toLocaleDateString("en-US")
+  );
+  setMetric("historyLatest", money(Number(latest.tracked_assets)));
+
+  setMetric(
+    "historyDailyChange",
+    signedMoney(latestDailyChange),
+    Number.isFinite(latestDailyChange)
+      ? latestDailyChange >= 0
+        ? "good"
+        : "bad"
+      : ""
+  );
+
+  setMetric(
+    "historyDailyReturn",
+    Number.isFinite(latestDailyReturn)
+      ? `${latestDailyReturn >= 0 ? "+" : ""}${pct(latestDailyReturn)}`
+      : "—",
+    Number.isFinite(latestDailyReturn)
+      ? latestDailyReturn >= 0
+        ? "good"
+        : "bad"
+      : ""
+  );
+
+  setMetric("historyHigh", money(highestValue));
+  setMetric("historyLow", money(lowestValue));
+
+  setMetric(
+    "historyAverageChange",
+    signedMoney(averageDailyChange),
+    Number.isFinite(averageDailyChange)
+      ? averageDailyChange >= 0
+        ? "good"
+        : "bad"
+      : ""
+  );
+
+  setMetric(
+    "historyCount",
+    historySnapshots.length.toLocaleString("en-US")
+  );
 
   const recentRows = historySnapshots.slice(-10).reverse();
   $("historyBody").innerHTML = recentRows
     .map(
       (row) => `<tr>
         <td>${new Date(`${row.date}T12:00:00`).toLocaleDateString("en-US")}</td>
-        <td>${money(row.tracked_assets)}</td>
-        <td>${money(row.retirement_401k_value)}</td>
-        <td>${money(row.brokerage_value)}</td>
-        <td>${money(row.hys_value)}</td>
-        <td>${money(row.mu_value)}</td>
+        <td>${money(Number(row.tracked_assets))}</td>
+        <td>${money(Number(row.retirement_401k_value))}</td>
+        <td>${money(Number(row.brokerage_value))}</td>
+        <td>${money(Number(row.hys_value))}</td>
+        <td>${money(Number(row.mu_value))}</td>
       </tr>`
     )
     .join("");
