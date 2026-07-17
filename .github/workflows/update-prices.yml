@@ -1,4 +1,4 @@
-name: Update dashboard prices
+name: Update dashboard prices and history
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  update-prices:
+  update-dashboard-data:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,20 +21,24 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Fetch prices
+      - name: Fetch current prices
         env:
           ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
         run: python scripts/update_prices.py
 
-      - name: Commit updated prices
+      - name: Record daily history snapshot
+        run: python scripts/update_history.py
+
+      - name: Commit dashboard data
         run: |
-          if git diff --quiet data/prices.json; then
-            echo "No price changes to commit."
+          if git diff --quiet data/prices.json data/history.json; then
+            echo "No dashboard data changes to commit."
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/prices.json
-          git commit -m "Update dashboard prices"
+          git add data/prices.json data/history.json
+          git commit -m "Update dashboard prices and history"
+          git push
           git push
