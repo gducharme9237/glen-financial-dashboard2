@@ -27,10 +27,18 @@
     }
   },
   "hys": {
-    "balance": 80131.67,
+    "balance": 81631.67,
     "target": 100000,
     "apy": 0.03,
-    "monthly_contribution": 1500
+    "monthly_contribution": 1500,
+    "transactions": [
+      {
+        "date": "2026-07-21",
+        "type": "deposit",
+        "amount": 1500.0,
+        "note": "July Deposit"
+      }
+    ]
   },
   "micron": {
     "ticker": "MU",
@@ -56,5 +64,6 @@
     "date_of_birth": "1971-07-02",
     "projection_age": 65,
     "last_updated": "2026-07-16"
-  }
+  },
+  "updated_at": "2026-07-21T22:54:34.883982+00:00"
 }
