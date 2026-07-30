@@ -14,8 +14,8 @@
       "dividend_yield_estimate": 0.011
     },
     "SCHD": {
-      "shares": 63,
-      "cost_basis": 2004.65,
+      "shares": 102.0,
+      "cost_basis": 3332.01,
       "target": 0.2,
       "dividend_yield_estimate": 0.038
     },
@@ -70,5 +70,5 @@
     "projection_age": 65,
     "last_updated": "2026-07-16"
   },
-  "updated_at": "2026-07-30T01:02:13.247637+00:00"
+  "updated_at": "2026-07-30T01:03:08.533223+00:00"
 }
