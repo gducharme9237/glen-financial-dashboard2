@@ -27,7 +27,7 @@
     }
   },
   "hys": {
-    "balance": 81829.5,
+    "balance": 82329.5,
     "target": 100000,
     "apy": 0.03,
     "monthly_contribution": 1500,
@@ -42,6 +42,11 @@
         "date": "2026-07-21",
         "type": "interest",
         "amount": 197.83
+      },
+      {
+        "date": "2026-07-30",
+        "type": "deposit",
+        "amount": 500.0
       }
     ]
   },
@@ -70,5 +75,5 @@
     "projection_age": 65,
     "last_updated": "2026-07-16"
   },
-  "updated_at": "2026-07-30T01:03:08.533223+00:00"
+  "updated_at": "2026-07-30T01:03:47.644096+00:00"
 }
