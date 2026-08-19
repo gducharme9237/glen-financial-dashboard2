@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-08-18T23:48:23.628628+00:00",
+  "updated_at": "2026-08-19T23:48:14.686783+00:00",
   "source": "Alpha Vantage GLOBAL_QUOTE",
   "prices": {
-    "VOO": 705.4,
-    "FSKAX": 214.0,
-    "SCHD": 34.51,
-    "VXUS": 86.44,
-    "MU": 940.76
+    "VOO": 706.91,
+    "FSKAX": 212.3,
+    "SCHD": 35.09,
+    "VXUS": 86.97,
+    "MU": 937.105
   },
   "errors": {}
 }
