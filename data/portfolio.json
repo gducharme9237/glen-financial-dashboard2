@@ -67,7 +67,7 @@
     ]
   },
   "retirement_401k": {
-    "balance": 834806.0,
+    "balance": 851183.79,
     "monthly_contribution": 2142.0,
     "annual_return": 0.07,
     "contribution_end_date": "2030-12-31",
@@ -75,5 +75,5 @@
     "projection_age": 65,
     "last_updated": "2026-07-16"
   },
-  "updated_at": "2026-08-22T16:13:38.060118+00:00"
+  "updated_at": "2026-08-22T16:14:53.620832+00:00"
 }
