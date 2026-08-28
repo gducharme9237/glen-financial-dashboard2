@@ -141,7 +141,7 @@
   <div class="heading">
     <div>
       <h2>401(k) Retirement Projection</h2>
-      <p>Combined Traditional, Roth, and after-tax balance projected through your selected retirement age.</p>
+      <p>Combined Traditional, Roth, and after-tax balance projected through age 65.</p>
     </div>
   </div>
   <div class="cols">
@@ -169,36 +169,11 @@
         </p>
         <button id="retirementReturnReset" type="button">Reset to saved assumption</button>
       </div>
-
-      <div class="retirement-slider">
-        <div class="retirement-slider-heading">
-          <label for="retirementAgeSlider">Retirement age</label>
-          <strong id="retirementAge">—</strong>
-        </div>
-        <input
-          id="retirementAgeSlider"
-          type="range"
-          min="56"
-          max="70"
-          step="1"
-          value="65"
-          aria-describedby="retirementAgeSliderHelp"
-        >
-        <div class="retirement-slider-scale" aria-hidden="true">
-          <span>56</span>
-          <span>70</span>
-        </div>
-        <p id="retirementAgeSliderHelp">
-          Drag the slider to test retiring earlier or later. This does not change your saved data.
-        </p>
-        <button id="retirementAgeReset" type="button">Reset to saved age</button>
-      </div>
-
       <dl>
         <div><dt>Current balance</dt><dd id="retirementCurrent">—</dd></div>
         <div><dt>Monthly contribution</dt><dd id="retirementContribution">—</dd></div>
         <div><dt>Contribution end date</dt><dd id="retirementContributionEnd">—</dd></div>
-        <div><dt id="retirementProjectedLabel">Projected value at age 65</dt><dd id="retirementProjected">—</dd></div>
+        <div><dt>Projected value at age 65</dt><dd id="retirementProjected">—</dd></div>
         <div><dt>Projected growth from today</dt><dd id="retirementGrowth">—</dd></div>
       </dl>
 
@@ -206,14 +181,14 @@
         <div class="retirement-comparison-heading">
           <div>
             <h3>Return comparison</h3>
-            <p id="retirementComparisonDescription">Age-65 projections compared with your saved assumption.</p>
+            <p>Age-65 projections compared with your saved assumption.</p>
           </div>
         </div>
         <div class="retirement-comparison-grid" id="retirementComparison" aria-live="polite"></div>
       </div>
     </div>
     <div class="card">
-      <h3 id="retirementChartTitle">Projected balance through age 65</h3>
+      <h3>Projected balance through age 65</h3>
       <canvas id="retirementChart"></canvas>
     </div>
   </div>
@@ -228,4 +203,4 @@
 <div class="card"><b>2</b><div><strong id="playbookBuy">Buy recommendation</strong><p id="playbookReason">Calculating…</p></div></div>
 <div class="card"><b>3</b><div><strong>Fund HYS</strong><p>Target $1,500.</p></div></div>
 <div class="card"><b>4</b><div><strong>Update RSUs</strong><p>Replace gross vesting with net shares received.</p></div></div></div></section>
-</main><footer>Personal planning dashboard. Verify trade decisions in E*Trade.</footer><script src="js/dashboard.js?v=5"></script></body></html>
+</main><footer>Personal planning dashboard. Verify trade decisions in E*Trade.</footer><script src="js/dashboard.js?v=4"></script></body></html>
