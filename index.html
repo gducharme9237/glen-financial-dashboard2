@@ -197,7 +197,19 @@
       <dl>
         <div><dt>Current balance</dt><dd id="retirementCurrent">—</dd></div>
         <div><dt>Monthly contribution</dt><dd id="retirementContribution">—</dd></div>
-        <div><dt>Contribution end date</dt><dd id="retirementContributionEnd">—</dd></div>
+        <div class="retirement-assumption-row">
+          <dt><label for="retirementContributionEndInput">Contribution stop date</label></dt>
+          <dd>
+            <input
+              id="retirementContributionEndInput"
+              type="month"
+              aria-describedby="retirementContributionEndHelp"
+            >
+            <small id="retirementContributionEndHelp">
+              Contributions stop after this month; growth continues afterward.
+            </small>
+          </dd>
+        </div>
         <div><dt id="retirementProjectedLabel">Projected value at age 65</dt><dd id="retirementProjected">—</dd></div>
         <div><dt>Projected growth from today</dt><dd id="retirementGrowth">—</dd></div>
       </dl>
@@ -228,4 +240,4 @@
 <div class="card"><b>2</b><div><strong id="playbookBuy">Buy recommendation</strong><p id="playbookReason">Calculating…</p></div></div>
 <div class="card"><b>3</b><div><strong>Fund HYS</strong><p>Target $1,500.</p></div></div>
 <div class="card"><b>4</b><div><strong>Update RSUs</strong><p>Replace gross vesting with net shares received.</p></div></div></div></section>
-</main><footer>Personal planning dashboard. Verify trade decisions in E*Trade.</footer><script src="js/dashboard.js?v=5"></script></body></html>
+</main><footer>Personal planning dashboard. Verify trade decisions in E*Trade.</footer><script src="js/dashboard.js?v=6"></script></body></html>

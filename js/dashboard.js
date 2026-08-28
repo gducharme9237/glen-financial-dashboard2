@@ -168,7 +168,8 @@ function renderCharts(values, holdings, hys) {
 function projectRetirement(
   retirement,
   annualReturn = retirement.annual_return,
-  projectionAge = retirement.projection_age
+  projectionAge = retirement.projection_age,
+  contributionEndDate = retirement.contribution_end_date
 ) {
   const dob = new Date(`${retirement.date_of_birth}T12:00:00`);
   const endDate = new Date(
@@ -206,16 +207,20 @@ function projectRetirement(
   };
 }
 
-function renderRetirementComparison(retirement, projectionAge = retirement.projection_age) {
+function renderRetirementComparison(
+  retirement,
+  projectionAge = retirement.projection_age,
+  contributionEndDate = retirement.contribution_end_date
+) {
   const savedReturn = retirement.annual_return;
-  const baselineValue = projectRetirement(retirement, savedReturn, projectionAge).finalValue;
+  const baselineValue = projectRetirement(retirement, savedReturn, projectionAge, contributionEndDate).finalValue;
   const scenarioRates = [0.05, savedReturn, 0.09];
   const uniqueRates = [...new Set(scenarioRates.map((rate) => rate.toFixed(4)))]
     .map(Number)
     .sort((a, b) => a - b);
 
   $("retirementComparison").innerHTML = uniqueRates.map((rate) => {
-    const projectedValue = projectRetirement(retirement, rate, projectionAge).finalValue;
+    const projectedValue = projectRetirement(retirement, rate, projectionAge, contributionEndDate).finalValue;
     const difference = projectedValue - baselineValue;
     const isSaved = Math.abs(rate - savedReturn) < 0.00001;
     let differenceText = "Baseline";
@@ -242,9 +247,15 @@ function renderRetirementComparison(retirement, projectionAge = retirement.proje
 function updateRetirementScenario(
   retirement,
   annualReturn,
-  projectionAge = retirement.projection_age
+  projectionAge = retirement.projection_age,
+  contributionEndDate = retirement.contribution_end_date
 ) {
-  const projection = projectRetirement(retirement, annualReturn, projectionAge);
+  const projection = projectRetirement(
+    retirement,
+    annualReturn,
+    projectionAge,
+    contributionEndDate
+  );
   const growth = projection.finalValue - retirement.balance;
 
   $("retirementReturn").textContent = `${(annualReturn * 100).toFixed(1)}%`;
@@ -282,37 +293,50 @@ function updateRetirementScenario(
 }
 
 function renderRetirement(retirement) {
-  const contributionEnd = new Date(`${retirement.contribution_end_date}T12:00:00`);
   const savedReturnPercent = retirement.annual_return * 100;
   const savedAge = retirement.projection_age;
+  const savedContributionEnd = retirement.contribution_end_date.slice(0, 7);
+
   const returnSlider = $("retirementReturnSlider");
   const returnResetButton = $("retirementReturnReset");
   const ageSlider = $("retirementAgeSlider");
   const ageResetButton = $("retirementAgeReset");
+  const contributionEndInput = $("retirementContributionEndInput");
 
   $("retirementValue").textContent = money(retirement.balance);
   $("retirementCurrent").textContent = money(retirement.balance);
   $("retirementContribution").textContent = money(retirement.monthly_contribution);
-  $("retirementContributionEnd").textContent = contributionEnd.toLocaleDateString(
-    "en-US",
-    { month: "long", year: "numeric" }
-  );
 
   returnSlider.value = String(savedReturnPercent);
   ageSlider.value = String(savedAge);
+  contributionEndInput.value = savedContributionEnd;
 
   const refresh = () => {
     const annualReturn = Number(returnSlider.value) / 100;
     const projectionAge = Number(ageSlider.value);
+    const contributionEndDate = contributionEndInput.value
+      ? `${contributionEndInput.value}-01`
+      : retirement.contribution_end_date;
 
-    renderRetirementComparison(retirement, projectionAge);
-    updateRetirementScenario(retirement, annualReturn, projectionAge);
+    renderRetirementComparison(
+      retirement,
+      projectionAge,
+      contributionEndDate
+    );
+
+    updateRetirementScenario(
+      retirement,
+      annualReturn,
+      projectionAge,
+      contributionEndDate
+    );
   };
 
   refresh();
 
   returnSlider.addEventListener("input", refresh);
   ageSlider.addEventListener("input", refresh);
+  contributionEndInput.addEventListener("input", refresh);
 
   returnResetButton.addEventListener("click", () => {
     returnSlider.value = String(savedReturnPercent);
