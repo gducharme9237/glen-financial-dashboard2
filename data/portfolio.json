@@ -64,7 +64,7 @@
   },
   "micron": {
     "ticker": "MU",
-    "vested_shares": 168,
+    "vested_shares": 145,
     "vesting_events": [
       {
         "date": "2026-07-15",
