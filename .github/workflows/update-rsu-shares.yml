@@ -1,0 +1,76 @@
+name: Update RSU Shares
+
+on:
+  workflow_dispatch:
+    inputs:
+      vested_shares:
+        description: "Current Micron shares you actually own"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  update-rsu-shares:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Update vested RSU shares
+        env:
+          VESTED_SHARES: ${{ inputs.vested_shares }}
+        run: |
+          python - <<'PY'
+          import json
+          import math
+          import os
+          from pathlib import Path
+
+          path = Path("data/portfolio.json")
+          if not path.exists():
+              raise SystemExit("data/portfolio.json was not found.")
+
+          raw = os.environ["VESTED_SHARES"].strip().replace(",", "")
+
+          try:
+              shares = float(raw)
+          except ValueError:
+              raise SystemExit("Vested shares must be a valid number.")
+
+          if not math.isfinite(shares) or shares < 0:
+              raise SystemExit("Vested shares must be zero or greater.")
+
+          saved_value = int(shares) if shares.is_integer() else shares
+
+          data = json.loads(path.read_text(encoding="utf-8"))
+
+          if "micron" not in data or not isinstance(data["micron"], dict):
+              raise SystemExit('portfolio.json is missing the "micron" section.')
+
+          old_value = data["micron"].get("vested_shares")
+          data["micron"]["vested_shares"] = saved_value
+
+          path.write_text(
+              json.dumps(data, indent=2) + "\n",
+              encoding="utf-8"
+          )
+
+          print(f"Updated Micron vested shares: {old_value} -> {saved_value}")
+          PY
+
+      - name: Commit updated portfolio
+        run: |
+          if git diff --quiet -- data/portfolio.json; then
+            echo "No change to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add data/portfolio.json
+          git commit -m "Update vested RSU shares"
+          git push
