@@ -177,7 +177,7 @@ function projectRetirement(
     dob.getMonth(),
     dob.getDate()
   );
-  const contributionEnd = new Date(`${retirement.contribution_end_date}T23:59:59`);
+  const contributionEnd = new Date(`${contributionEndDate}T23:59:59`);
   const monthlyRate = Math.pow(1 + annualReturn, 1 / 12) - 1;
 
   const labels = [];
