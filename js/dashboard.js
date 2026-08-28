@@ -165,10 +165,14 @@ function renderCharts(values, holdings, hys) {
 }
 
 
-function projectRetirement(retirement, annualReturn = retirement.annual_return) {
+function projectRetirement(
+  retirement,
+  annualReturn = retirement.annual_return,
+  projectionAge = retirement.projection_age
+) {
   const dob = new Date(`${retirement.date_of_birth}T12:00:00`);
   const endDate = new Date(
-    dob.getFullYear() + retirement.projection_age,
+    dob.getFullYear() + projectionAge,
     dob.getMonth(),
     dob.getDate()
   );
@@ -202,16 +206,16 @@ function projectRetirement(retirement, annualReturn = retirement.annual_return) 
   };
 }
 
-function renderRetirementComparison(retirement) {
+function renderRetirementComparison(retirement, projectionAge = retirement.projection_age) {
   const savedReturn = retirement.annual_return;
-  const baselineValue = projectRetirement(retirement, savedReturn).finalValue;
+  const baselineValue = projectRetirement(retirement, savedReturn, projectionAge).finalValue;
   const scenarioRates = [0.05, savedReturn, 0.09];
   const uniqueRates = [...new Set(scenarioRates.map((rate) => rate.toFixed(4)))]
     .map(Number)
     .sort((a, b) => a - b);
 
   $("retirementComparison").innerHTML = uniqueRates.map((rate) => {
-    const projectedValue = projectRetirement(retirement, rate).finalValue;
+    const projectedValue = projectRetirement(retirement, rate, projectionAge).finalValue;
     const difference = projectedValue - baselineValue;
     const isSaved = Math.abs(rate - savedReturn) < 0.00001;
     let differenceText = "Baseline";
@@ -235,11 +239,21 @@ function renderRetirementComparison(retirement) {
   }).join("");
 }
 
-function updateRetirementScenario(retirement, annualReturn) {
-  const projection = projectRetirement(retirement, annualReturn);
+function updateRetirementScenario(
+  retirement,
+  annualReturn,
+  projectionAge = retirement.projection_age
+) {
+  const projection = projectRetirement(retirement, annualReturn, projectionAge);
   const growth = projection.finalValue - retirement.balance;
 
   $("retirementReturn").textContent = `${(annualReturn * 100).toFixed(1)}%`;
+  $("retirementAge").textContent = String(projectionAge);
+  $("retirementProjectedLabel").textContent = `Projected value at age ${projectionAge}`;
+  $("retirementComparisonDescription").textContent =
+    `Age-${projectionAge} projections compared with your saved assumption.`;
+  $("retirementChartTitle").textContent =
+    `Projected balance through age ${projectionAge}`;
   $("retirementProjected").textContent = money(projection.finalValue);
   $("retirementGrowth").textContent = signedMoney(growth);
   $("retirementGrowth").className = growth >= 0 ? "good" : "bad";
@@ -270,8 +284,11 @@ function updateRetirementScenario(retirement, annualReturn) {
 function renderRetirement(retirement) {
   const contributionEnd = new Date(`${retirement.contribution_end_date}T12:00:00`);
   const savedReturnPercent = retirement.annual_return * 100;
-  const slider = $("retirementReturnSlider");
-  const resetButton = $("retirementReturnReset");
+  const savedAge = retirement.projection_age;
+  const returnSlider = $("retirementReturnSlider");
+  const returnResetButton = $("retirementReturnReset");
+  const ageSlider = $("retirementAgeSlider");
+  const ageResetButton = $("retirementAgeReset");
 
   $("retirementValue").textContent = money(retirement.balance);
   $("retirementCurrent").textContent = money(retirement.balance);
@@ -281,17 +298,30 @@ function renderRetirement(retirement) {
     { month: "long", year: "numeric" }
   );
 
-  slider.value = String(savedReturnPercent);
-  renderRetirementComparison(retirement);
-  updateRetirementScenario(retirement, retirement.annual_return);
+  returnSlider.value = String(savedReturnPercent);
+  ageSlider.value = String(savedAge);
 
-  slider.addEventListener("input", () => {
-    updateRetirementScenario(retirement, Number(slider.value) / 100);
+  const refresh = () => {
+    const annualReturn = Number(returnSlider.value) / 100;
+    const projectionAge = Number(ageSlider.value);
+
+    renderRetirementComparison(retirement, projectionAge);
+    updateRetirementScenario(retirement, annualReturn, projectionAge);
+  };
+
+  refresh();
+
+  returnSlider.addEventListener("input", refresh);
+  ageSlider.addEventListener("input", refresh);
+
+  returnResetButton.addEventListener("click", () => {
+    returnSlider.value = String(savedReturnPercent);
+    refresh();
   });
 
-  resetButton.addEventListener("click", () => {
-    slider.value = String(savedReturnPercent);
-    updateRetirementScenario(retirement, retirement.annual_return);
+  ageResetButton.addEventListener("click", () => {
+    ageSlider.value = String(savedAge);
+    refresh();
   });
 }
 
