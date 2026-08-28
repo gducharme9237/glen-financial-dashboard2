@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-27T04:38:56.465240+00:00",
+  "updated_at": "2026-08-28T07:01:40.884583+00:00",
   "source": "Alpha Vantage GLOBAL_QUOTE",
   "prices": {
     "VOO": 704.2,
@@ -8,5 +8,11 @@
     "VXUS": 87.82,
     "MU": 938.4
   },
-  "errors": {}
+  "errors": {
+    "VOO": "We have detected your API key as P8K26EA4E97IAL1F and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly remove all daily rate limits.",
+    "FSKAX": "We have detected your API key as P8K26EA4E97IAL1F and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly remove all daily rate limits.",
+    "SCHD": "We have detected your API key as P8K26EA4E97IAL1F and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly remove all daily rate limits.",
+    "VXUS": "We have detected your API key as P8K26EA4E97IAL1F and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly remove all daily rate limits.",
+    "MU": "We have detected your API key as P8K26EA4E97IAL1F and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly remove all daily rate limits."
+  }
 }
