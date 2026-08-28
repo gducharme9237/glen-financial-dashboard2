@@ -27,7 +27,7 @@
     }
   },
   "hys": {
-    "balance": 175329.5,
+    "balance": 174579.41,
     "target": 100000,
     "apy": 0.03,
     "monthly_contribution": 1500,
@@ -53,6 +53,12 @@
         "type": "deposit",
         "amount": 93000.0,
         "note": "sold stock, money is place holder for future purchases"
+      },
+      {
+        "date": "2026-08-28",
+        "type": "withdrawal",
+        "amount": 750.09,
+        "note": "adjusting to correct balance"
       }
     ]
   },
@@ -81,5 +87,5 @@
     "projection_age": 65,
     "last_updated": "2026-07-16"
   },
-  "updated_at": "2026-08-28T17:23:22.325363+00:00"
+  "updated_at": "2026-08-28T17:26:32.605012+00:00"
 }
