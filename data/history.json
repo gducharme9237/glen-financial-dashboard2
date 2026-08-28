@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-18T06:33:50.613880+00:00",
+  "updated_at": "2026-08-28T17:26:32.605526+00:00",
   "snapshots": [
     {
       "date": "2026-07-17",
@@ -36,6 +36,536 @@
         "SCHD": 2073.33,
         "VXUS": 2000.88
       }
+    },
+    {
+      "date": "2026-07-20",
+      "captured_at": "2026-07-20T23:23:18.548612+00:00",
+      "tracked_assets": 1083047.13,
+      "brokerage_value": 31324.93,
+      "brokerage_cost_basis": 31570.33,
+      "brokerage_gain_loss": -245.4,
+      "hys_value": 80131.67,
+      "mu_value": 145397.28,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 826193.25,
+      "holdings": {
+        "FSKAX": 14988.22,
+        "VOO": 12279.78,
+        "SCHD": 2063.25,
+        "VXUS": 1993.68
+      }
+    },
+    {
+      "date": "2026-07-21",
+      "captured_at": "2026-07-21T23:00:49.929846+00:00",
+      "tracked_assets": 1102546.96,
+      "brokerage_value": 31426.45,
+      "brokerage_cost_basis": 31570.33,
+      "brokerage_gain_loss": -143.88,
+      "hys_value": 81829.5,
+      "mu_value": 163097.76,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 826193.25,
+      "holdings": {
+        "FSKAX": 14950.33,
+        "VOO": 12381.66,
+        "SCHD": 2067.66,
+        "VXUS": 2026.8
+      }
+    },
+    {
+      "date": "2026-07-22",
+      "captured_at": "2026-07-22T07:59:28.145233+00:00",
+      "tracked_assets": 1102546.96,
+      "brokerage_value": 31426.45,
+      "brokerage_cost_basis": 31570.33,
+      "brokerage_gain_loss": -143.88,
+      "hys_value": 81829.5,
+      "mu_value": 163097.76,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 826193.25,
+      "holdings": {
+        "FSKAX": 14950.33,
+        "VOO": 12381.66,
+        "SCHD": 2067.66,
+        "VXUS": 2026.8
+      }
+    },
+    {
+      "date": "2026-07-23",
+      "captured_at": "2026-07-23T08:04:00.027902+00:00",
+      "tracked_assets": 1102546.96,
+      "brokerage_value": 31426.45,
+      "brokerage_cost_basis": 31570.33,
+      "brokerage_gain_loss": -143.88,
+      "hys_value": 81829.5,
+      "mu_value": 163097.76,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 826193.25,
+      "holdings": {
+        "FSKAX": 14950.33,
+        "VOO": 12381.66,
+        "SCHD": 2067.66,
+        "VXUS": 2026.8
+      }
+    },
+    {
+      "date": "2026-07-24",
+      "captured_at": "2026-07-24T07:59:16.344479+00:00",
+      "tracked_assets": 1105727.38,
+      "brokerage_value": 31349.35,
+      "brokerage_cost_basis": 31570.33,
+      "brokerage_gain_loss": -220.98,
+      "hys_value": 81829.5,
+      "mu_value": 166355.28,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 826193.25,
+      "holdings": {
+        "FSKAX": 15061.09,
+        "VOO": 12214.98,
+        "SCHD": 2066.4,
+        "VXUS": 2006.88
+      }
+    },
+    {
+      "date": "2026-07-25",
+      "captured_at": "2026-07-25T07:31:23.247405+00:00",
+      "tracked_assets": 1093955.59,
+      "brokerage_value": 31213.24,
+      "brokerage_cost_basis": 31570.33,
+      "brokerage_gain_loss": -357.09,
+      "hys_value": 81829.5,
+      "mu_value": 154719.6,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 826193.25,
+      "holdings": {
+        "FSKAX": 14889.85,
+        "VOO": 12224.52,
+        "SCHD": 2097.27,
+        "VXUS": 2001.6
+      }
+    },
+    {
+      "date": "2026-07-28",
+      "captured_at": "2026-07-28T08:08:21.030392+00:00",
+      "tracked_assets": 1090494.47,
+      "brokerage_value": 31238.12,
+      "brokerage_cost_basis": 31570.33,
+      "brokerage_gain_loss": -332.21,
+      "hys_value": 81829.5,
+      "mu_value": 151233.6,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 826193.25,
+      "holdings": {
+        "FSKAX": 14893.49,
+        "VOO": 12227.58,
+        "SCHD": 2106.09,
+        "VXUS": 2010.96
+      }
+    },
+    {
+      "date": "2026-07-29",
+      "captured_at": "2026-07-29T09:46:51.139741+00:00",
+      "tracked_assets": 1077168.75,
+      "brokerage_value": 31296.96,
+      "brokerage_cost_basis": 31570.33,
+      "brokerage_gain_loss": -273.37,
+      "hys_value": 81829.5,
+      "mu_value": 137849.04,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 826193.25,
+      "holdings": {
+        "FSKAX": 14906.61,
+        "VOO": 12257.28,
+        "SCHD": 2135.07,
+        "VXUS": 1998.0
+      }
+    },
+    {
+      "date": "2026-07-30",
+      "captured_at": "2026-07-30T07:58:15.099808+00:00",
+      "tracked_assets": 1067085.77,
+      "brokerage_value": 34411.02,
+      "brokerage_cost_basis": 34873.25,
+      "brokerage_gain_loss": -462.23,
+      "hys_value": 82329.5,
+      "mu_value": 124152.0,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 826193.25,
+      "holdings": {
+        "FSKAX": 14934.3,
+        "VOO": 12071.34,
+        "SCHD": 3450.66,
+        "VXUS": 3954.72
+      }
+    },
+    {
+      "date": "2026-07-31",
+      "captured_at": "2026-07-31T09:52:00.367341+00:00",
+      "tracked_assets": 1089920.85,
+      "brokerage_value": 34455.22,
+      "brokerage_cost_basis": 34873.25,
+      "brokerage_gain_loss": -418.03,
+      "hys_value": 82329.5,
+      "mu_value": 146942.88,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 826193.25,
+      "holdings": {
+        "FSKAX": 14706.22,
+        "VOO": 12272.22,
+        "SCHD": 3407.82,
+        "VXUS": 4068.96
+      }
+    },
+    {
+      "date": "2026-08-01",
+      "captured_at": "2026-08-01T07:53:32.730634+00:00",
+      "tracked_assets": 1081571.71,
+      "brokerage_value": 34779.92,
+      "brokerage_cost_basis": 34873.25,
+      "brokerage_gain_loss": -93.33,
+      "hys_value": 82329.5,
+      "mu_value": 138269.04,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 826193.25,
+      "holdings": {
+        "FSKAX": 14945.96,
+        "VOO": 12359.7,
+        "SCHD": 3413.94,
+        "VXUS": 4060.32
+      }
+    },
+    {
+      "date": "2026-08-04",
+      "captured_at": "2026-08-04T09:46:21.613092+00:00",
+      "tracked_assets": 1082950.7,
+      "brokerage_value": 35071.95,
+      "brokerage_cost_basis": 34873.25,
+      "brokerage_gain_loss": 198.7,
+      "hys_value": 82329.5,
+      "mu_value": 139356.0,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 826193.25,
+      "holdings": {
+        "FSKAX": 15032.67,
+        "VOO": 12535.2,
+        "SCHD": 3423.12,
+        "VXUS": 4080.96
+      }
+    },
+    {
+      "date": "2026-08-05",
+      "captured_at": "2026-08-05T09:28:59.009749+00:00",
+      "tracked_assets": 1102730.2,
+      "brokerage_value": 35626.14,
+      "brokerage_cost_basis": 34873.25,
+      "brokerage_gain_loss": 752.89,
+      "hys_value": 82329.5,
+      "mu_value": 149968.56,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 834806.0,
+      "holdings": {
+        "FSKAX": 15262.2,
+        "VOO": 12761.64,
+        "SCHD": 3452.7,
+        "VXUS": 4149.6
+      }
+    },
+    {
+      "date": "2026-08-06",
+      "captured_at": "2026-08-06T08:08:47.824659+00:00",
+      "tracked_assets": 1103056.18,
+      "brokerage_value": 35864.76,
+      "brokerage_cost_basis": 34873.25,
+      "brokerage_gain_loss": 991.51,
+      "hys_value": 82329.5,
+      "mu_value": 150055.92,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 834806.0,
+      "holdings": {
+        "FSKAX": 15544.2,
+        "VOO": 12736.8,
+        "SCHD": 3431.28,
+        "VXUS": 4152.48
+      }
+    },
+    {
+      "date": "2026-08-07",
+      "captured_at": "2026-08-07T05:26:04.128225+00:00",
+      "tracked_assets": 1101025.46,
+      "brokerage_value": 35803.0,
+      "brokerage_cost_basis": 34873.25,
+      "brokerage_gain_loss": 929.75,
+      "hys_value": 82329.5,
+      "mu_value": 148086.96,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 834806.0,
+      "holdings": {
+        "FSKAX": 15507.04,
+        "VOO": 12715.2,
+        "SCHD": 3437.4,
+        "VXUS": 4143.36
+      }
+    },
+    {
+      "date": "2026-08-08",
+      "captured_at": "2026-08-08T03:59:01.617600+00:00",
+      "tracked_assets": 1100480.35,
+      "brokerage_value": 35913.09,
+      "brokerage_cost_basis": 34873.25,
+      "brokerage_gain_loss": 1039.84,
+      "hys_value": 82329.5,
+      "mu_value": 147431.76,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 834806.0,
+      "holdings": {
+        "FSKAX": 15476.43,
+        "VOO": 12792.78,
+        "SCHD": 3457.8,
+        "VXUS": 4186.08
+      }
+    },
+    {
+      "date": "2026-08-11",
+      "captured_at": "2026-08-11T04:08:30.090219+00:00",
+      "tracked_assets": 1097822.71,
+      "brokerage_value": 36039.21,
+      "brokerage_cost_basis": 34873.25,
+      "brokerage_gain_loss": 1165.96,
+      "hys_value": 82329.5,
+      "mu_value": 144648.0,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 834806.0,
+      "holdings": {
+        "FSKAX": 15592.29,
+        "VOO": 12791.7,
+        "SCHD": 3487.38,
+        "VXUS": 4167.84
+      }
+    },
+    {
+      "date": "2026-08-12",
+      "captured_at": "2026-08-12T00:07:34.524724+00:00",
+      "tracked_assets": 1099045.3,
+      "brokerage_value": 35998.44,
+      "brokerage_cost_basis": 34873.25,
+      "brokerage_gain_loss": 1125.19,
+      "hys_value": 82329.5,
+      "mu_value": 145911.36,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 834806.0,
+      "holdings": {
+        "FSKAX": 15579.18,
+        "VOO": 12751.56,
+        "SCHD": 3495.54,
+        "VXUS": 4172.16
+      }
+    },
+    {
+      "date": "2026-08-13",
+      "captured_at": "2026-08-13T00:07:45.918087+00:00",
+      "tracked_assets": 1106252.28,
+      "brokerage_value": 36020.06,
+      "brokerage_cost_basis": 34873.25,
+      "brokerage_gain_loss": 1146.81,
+      "hys_value": 82329.5,
+      "mu_value": 153096.72,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 834806.0,
+      "holdings": {
+        "FSKAX": 15540.56,
+        "VOO": 12783.06,
+        "SCHD": 3494.52,
+        "VXUS": 4201.92
+      }
+    },
+    {
+      "date": "2026-08-14",
+      "captured_at": "2026-08-14T23:48:48.396426+00:00",
+      "tracked_assets": 1116637.75,
+      "brokerage_value": 36263.37,
+      "brokerage_cost_basis": 34873.25,
+      "brokerage_gain_loss": 1390.12,
+      "hys_value": 82329.5,
+      "mu_value": 163238.88,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 834806.0,
+      "holdings": {
+        "FSKAX": 15687.75,
+        "VOO": 12844.98,
+        "SCHD": 3521.04,
+        "VXUS": 4209.6
+      }
+    },
+    {
+      "date": "2026-08-17",
+      "captured_at": "2026-08-17T23:48:32.288805+00:00",
+      "tracked_assets": 1123279.23,
+      "brokerage_value": 36169.73,
+      "brokerage_cost_basis": 34873.25,
+      "brokerage_gain_loss": 1296.48,
+      "hys_value": 82329.5,
+      "mu_value": 169974.0,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 834806.0,
+      "holdings": {
+        "FSKAX": 15669.53,
+        "VOO": 12784.86,
+        "SCHD": 3497.58,
+        "VXUS": 4217.76
+      }
+    },
+    {
+      "date": "2026-08-18",
+      "captured_at": "2026-08-18T23:48:23.681022+00:00",
+      "tracked_assets": 1111143.27,
+      "brokerage_value": 35960.09,
+      "brokerage_cost_basis": 34873.25,
+      "brokerage_gain_loss": 1086.84,
+      "hys_value": 82329.5,
+      "mu_value": 158047.68,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 834806.0,
+      "holdings": {
+        "FSKAX": 15593.75,
+        "VOO": 12697.2,
+        "SCHD": 3520.02,
+        "VXUS": 4149.12
+      }
+    },
+    {
+      "date": "2026-08-19",
+      "captured_at": "2026-08-19T23:48:14.735503+00:00",
+      "tracked_assets": 1110517.14,
+      "brokerage_value": 35948.0,
+      "brokerage_cost_basis": 34873.25,
+      "brokerage_gain_loss": 1074.75,
+      "hys_value": 82329.5,
+      "mu_value": 157433.64,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 834806.0,
+      "holdings": {
+        "FSKAX": 15469.88,
+        "VOO": 12724.38,
+        "SCHD": 3579.18,
+        "VXUS": 4174.56
+      }
+    },
+    {
+      "date": "2026-08-20",
+      "captured_at": "2026-08-20T23:51:43.540084+00:00",
+      "tracked_assets": 1116675.34,
+      "brokerage_value": 35852.4,
+      "brokerage_cost_basis": 34873.25,
+      "brokerage_gain_loss": 979.15,
+      "hys_value": 82329.5,
+      "mu_value": 163687.44,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 834806.0,
+      "holdings": {
+        "FSKAX": 15504.12,
+        "VOO": 12618.18,
+        "SCHD": 3552.66,
+        "VXUS": 4177.44
+      }
+    },
+    {
+      "date": "2026-08-21",
+      "captured_at": "2026-08-21T23:49:48.207604+00:00",
+      "tracked_assets": 1115379.02,
+      "brokerage_value": 35824.48,
+      "brokerage_cost_basis": 34873.25,
+      "brokerage_gain_loss": 951.23,
+      "hys_value": 82329.5,
+      "mu_value": 162419.04,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 834806.0,
+      "holdings": {
+        "FSKAX": 15366.4,
+        "VOO": 12666.78,
+        "SCHD": 3581.22,
+        "VXUS": 4210.08
+      }
+    },
+    {
+      "date": "2026-08-22",
+      "captured_at": "2026-08-22T16:16:43.392391+00:00",
+      "tracked_assets": 1133832.83,
+      "brokerage_value": 37900.5,
+      "brokerage_cost_basis": 36874.89,
+      "brokerage_gain_loss": 1025.61,
+      "hys_value": 82329.5,
+      "mu_value": 162419.04,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 851183.79,
+      "holdings": {
+        "FSKAX": 15440.73,
+        "VOO": 12666.78,
+        "SCHD": 5582.91,
+        "VXUS": 4210.08
+      }
+    },
+    {
+      "date": "2026-08-24",
+      "captured_at": "2026-08-24T23:47:51.318881+00:00",
+      "tracked_assets": 1124323.61,
+      "brokerage_value": 37858.08,
+      "brokerage_cost_basis": 36874.89,
+      "brokerage_gain_loss": 983.19,
+      "hys_value": 82329.5,
+      "mu_value": 152952.24,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 851183.79,
+      "holdings": {
+        "FSKAX": 15440.73,
+        "VOO": 12632.94,
+        "SCHD": 5598.81,
+        "VXUS": 4185.6
+      }
+    },
+    {
+      "date": "2026-08-25",
+      "captured_at": "2026-08-25T23:50:01.884746+00:00",
+      "tracked_assets": 1124323.61,
+      "brokerage_value": 37858.08,
+      "brokerage_cost_basis": 36874.89,
+      "brokerage_gain_loss": 983.19,
+      "hys_value": 82329.5,
+      "mu_value": 152952.24,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 851183.79,
+      "holdings": {
+        "FSKAX": 15440.73,
+        "VOO": 12632.94,
+        "SCHD": 5598.81,
+        "VXUS": 4185.6
+      }
+    },
+    {
+      "date": "2026-08-27",
+      "captured_at": "2026-08-27T04:38:56.508387+00:00",
+      "tracked_assets": 1129064.45,
+      "brokerage_value": 37899.96,
+      "brokerage_cost_basis": 36874.89,
+      "brokerage_gain_loss": 1025.07,
+      "hys_value": 82329.5,
+      "mu_value": 157651.2,
+      "mu_shares": 168.0,
+      "retirement_401k_value": 851183.79,
+      "holdings": {
+        "FSKAX": 15435.63,
+        "VOO": 12675.6,
+        "SCHD": 5573.37,
+        "VXUS": 4215.36
+      }
+    },
+    {
+      "date": "2026-08-28",
+      "tracked_assets": 1221314.36,
+      "brokerage_value": 37899.96,
+      "retirement_401k_value": 851183.79,
+      "micron_value": 157651.2,
+      "hys_value": 174579.41
     }
   ]
 }

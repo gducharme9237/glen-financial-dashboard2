@@ -14,23 +14,53 @@
       "dividend_yield_estimate": 0.011
     },
     "SCHD": {
-      "shares": 63,
-      "cost_basis": 2004.65,
+      "shares": 159.012,
+      "cost_basis": 5333.65,
       "target": 0.2,
       "dividend_yield_estimate": 0.038
     },
     "VXUS": {
-      "shares": 24,
-      "cost_basis": 2065.68,
+      "shares": 48.0,
+      "cost_basis": 4041.24,
       "target": 0.2,
       "dividend_yield_estimate": 0.031
     }
   },
   "hys": {
-    "balance": 80131.67,
+    "balance": 174579.41,
     "target": 100000,
     "apy": 0.03,
-    "monthly_contribution": 1500
+    "monthly_contribution": 1500,
+    "transactions": [
+      {
+        "date": "2026-07-21",
+        "type": "deposit",
+        "amount": 1500.0,
+        "note": "July Deposit"
+      },
+      {
+        "date": "2026-07-21",
+        "type": "interest",
+        "amount": 197.83
+      },
+      {
+        "date": "2026-07-30",
+        "type": "deposit",
+        "amount": 500.0
+      },
+      {
+        "date": "2026-08-28",
+        "type": "deposit",
+        "amount": 93000.0,
+        "note": "sold stock, money is place holder for future purchases"
+      },
+      {
+        "date": "2026-08-28",
+        "type": "withdrawal",
+        "amount": 750.09,
+        "note": "adjusting to correct balance"
+      }
+    ]
   },
   "micron": {
     "ticker": "MU",
@@ -49,12 +79,13 @@
     ]
   },
   "retirement_401k": {
-    "balance": 826193.25,
+    "balance": 851183.79,
     "monthly_contribution": 2142.0,
     "annual_return": 0.07,
     "contribution_end_date": "2030-12-31",
     "date_of_birth": "1971-07-02",
     "projection_age": 65,
     "last_updated": "2026-07-16"
-  }
+  },
+  "updated_at": "2026-08-28T17:26:32.605012+00:00"
 }
