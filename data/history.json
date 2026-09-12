@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-11T01:22:28.410351+00:00",
+  "updated_at": "2026-09-12T01:23:21.984910+00:00",
   "snapshots": [
     {
       "date": "2026-07-17",
@@ -745,6 +745,24 @@
         "VOO": 12539.7,
         "SCHD": 5404.82,
         "VXUS": 4141.44
+      }
+    },
+    {
+      "date": "2026-09-12",
+      "captured_at": "2026-09-12T01:23:21.984910+00:00",
+      "tracked_assets": 1204665.43,
+      "brokerage_value": 37489.53,
+      "brokerage_cost_basis": 36874.89,
+      "brokerage_gain_loss": 614.64,
+      "hys_value": 174579.41,
+      "mu_value": 141412.7,
+      "mu_shares": 145.0,
+      "retirement_401k_value": 851183.79,
+      "holdings": {
+        "FSKAX": 15235.24,
+        "VOO": 12646.08,
+        "SCHD": 5425.49,
+        "VXUS": 4182.72
       }
     }
   ]
