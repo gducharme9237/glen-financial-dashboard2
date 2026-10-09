@@ -2,8 +2,8 @@
   "brokerage_monthly_contribution": 2000,
   "holdings": {
     "FSKAX": {
-      "shares": 72.868,
-      "cost_basis": 15014.18,
+      "shares": 132.868,
+      "cost_basis": 16984.28,
       "target": 0.4,
       "dividend_yield_estimate": 0.012
     },
@@ -87,5 +87,5 @@
     "projection_age": 65,
     "last_updated": "2026-07-16"
   },
-  "updated_at": "2026-09-28T13:52:42.456646+00:00"
+  "updated_at": "2026-10-09T00:17:53.926600+00:00"
 }
