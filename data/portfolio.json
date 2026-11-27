@@ -27,7 +27,7 @@
     }
   },
   "hys": {
-    "balance": 174579.41,
+    "balance": 205000.0,
     "target": 100000,
     "apy": 0.03,
     "monthly_contribution": 1500,
@@ -59,6 +59,12 @@
         "type": "withdrawal",
         "amount": 750.09,
         "note": "adjusting to correct balance"
+      },
+      {
+        "date": "2026-11-27",
+        "type": "deposit",
+        "amount": 30420.59,
+        "note": "Updating for current balance"
       }
     ]
   },
@@ -87,5 +93,5 @@
     "projection_age": 65,
     "last_updated": "2026-07-16"
   },
-  "updated_at": "2026-10-09T00:35:48.183895+00:00"
+  "updated_at": "2026-11-27T18:32:29.280114+00:00"
 }
