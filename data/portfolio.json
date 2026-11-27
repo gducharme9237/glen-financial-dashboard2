@@ -20,8 +20,8 @@
       "dividend_yield_estimate": 0.038
     },
     "VXUS": {
-      "shares": 71.0,
-      "cost_basis": 6012.91,
+      "shares": 167.086,
+      "cost_basis": 14030.33,
       "target": 0.2,
       "dividend_yield_estimate": 0.031
     }
@@ -93,5 +93,5 @@
     "projection_age": 65,
     "last_updated": "2026-07-16"
   },
-  "updated_at": "2026-11-27T18:35:43.543522+00:00"
+  "updated_at": "2026-11-27T18:36:28.181304+00:00"
 }
