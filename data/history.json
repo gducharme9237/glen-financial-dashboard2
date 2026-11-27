@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-27T18:36:28.181860+00:00",
+  "updated_at": "2026-11-27T18:37:16.942446+00:00",
   "snapshots": [
     {
       "date": "2026-07-17",
@@ -1729,9 +1729,9 @@
     },
     {
       "date": "2026-11-27",
-      "tracked_assets": 1218517.25,
+      "tracked_assets": 1189504.5,
       "brokerage_value": 75152.21,
-      "retirement_401k_value": 851183.79,
+      "retirement_401k_value": 822171.04,
       "micron_value": 87181.25,
       "hys_value": 205000.0
     }
