@@ -8,8 +8,8 @@
       "dividend_yield_estimate": 0.012
     },
     "VOO": {
-      "shares": 18,
-      "cost_basis": 12485.82,
+      "shares": 20.046,
+      "cost_basis": 13891.44,
       "target": 0.2,
       "dividend_yield_estimate": 0.011
     },
@@ -93,5 +93,5 @@
     "projection_age": 65,
     "last_updated": "2026-07-16"
   },
-  "updated_at": "2026-11-27T18:35:00.953049+00:00"
+  "updated_at": "2026-11-27T18:35:43.543522+00:00"
 }
